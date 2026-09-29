@@ -1,0 +1,63 @@
+{
+    "metadata": {
+        "alpha": 0.5,
+        "threshold_percentile": 95,
+        "max_train_samples_for_iforest": 50000,
+        "eval_max_benign_samples": 25000,
+        "eval_max_attack_samples": 25000,
+        "total_test_samples": 41404,
+        "test_normal_samples": 16404,
+        "test_attack_samples": 25000,
+        "feature_count": 39,
+        "latent_dim": 16
+    },
+    "thresholds": {
+        "tau_sae": 0.02465418167412281,
+        "tau_iforest": 0.7463310360908508,
+        "tau_hybrid": 0.3805471658706665
+    },
+    "metrics": {
+        "SAE": {
+            "threshold": 0.02465418167412281,
+            "TP": 22220,
+            "FP": 816,
+            "TN": 15588,
+            "FN": 2780,
+            "FPR": 0.04974396488661302,
+            "FNR": 0.1112,
+            "Precision": 0.9645771835388088,
+            "Recall": 0.8888,
+            "F1": 0.9251394787242901,
+            "ROC_AUC": 0.9726835369422092,
+            "PR_AUC": 0.9554898734418776
+        },
+        "IForest": {
+            "threshold": 0.7463310360908508,
+            "TP": 2598,
+            "FP": 756,
+            "TN": 15648,
+            "FN": 22402,
+            "FPR": 0.046086320409656184,
+            "FNR": 0.89608,
+            "Precision": 0.774597495527728,
+            "Recall": 0.10392,
+            "F1": 0.18325456725682443,
+            "ROC_AUC": 0.9021623652767617,
+            "PR_AUC": 0.8687783183155732
+        },
+        "Hybrid_SAE_IForest": {
+            "threshold": 0.3805471658706665,
+            "TP": 13627,
+            "FP": 786,
+            "TN": 15618,
+            "FN": 11373,
+            "FPR": 0.0479151426481346,
+            "FNR": 0.45492,
+            "Precision": 0.9454658988413238,
+            "Recall": 0.54508,
+            "F1": 0.6914977291756527,
+            "ROC_AUC": 0.9281713728358937,
+            "PR_AUC": 0.8972159910824832
+        }
+    }
+}

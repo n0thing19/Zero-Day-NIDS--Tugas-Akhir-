@@ -1,0 +1,19 @@
+{
+    "sae_bounds": [
+        3.126716910628602e-05,
+        0.2098090797662735
+    ],
+    "iforest_bounds": [
+        0.36340087307667707,
+        0.700546437795951
+    ],
+    "thresholds": {
+        "tau_sae": 0.02545684389770031,
+        "tau_iforest": 0.6257112622261047,
+        "tau_max_normalized": 1.179205298423767,
+        "tau_weighted_average": 0.32461273670196533,
+        "percentile": 95.0
+    },
+    "fusion_strategy": "or_rule",
+    "alpha": 0.5
+}
