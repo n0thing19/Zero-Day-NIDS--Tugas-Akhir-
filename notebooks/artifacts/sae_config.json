@@ -13,6 +13,6 @@
     "learning_rate": 0.001,
     "batch_size": 256,
     "epochs": 5,
-    "max_batches_per_epoch": null,
-    "device": "cpu"
+    "final_train_mse": 5.195626153081445e-05,
+    "device_trained": "cuda"
 }

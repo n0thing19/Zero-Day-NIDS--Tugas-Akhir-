@@ -1,63 +1,59 @@
 {
-    "metadata": {
+    "config": {
         "alpha": 0.5,
-        "threshold_percentile": 95,
-        "max_train_samples_for_iforest": 50000,
-        "eval_max_benign_samples": 25000,
-        "eval_max_attack_samples": 25000,
-        "total_test_samples": 41404,
-        "test_normal_samples": 16404,
-        "test_attack_samples": 25000,
-        "feature_count": 39,
-        "latent_dim": 16
+        "threshold_percentile": 95.0,
+        "latent_dim": 16,
+        "total_test_samples": 50000,
+        "normal_samples": 25000,
+        "unseen_attack_samples": 25000
     },
     "thresholds": {
-        "tau_sae": 0.02465418167412281,
-        "tau_iforest": 0.7463310360908508,
-        "tau_hybrid": 0.3805471658706665
+        "tau_sae": 0.0008977684774436057,
+        "tau_iforest": 0.5229777097702026,
+        "tau_hybrid": 0.2698139548301697
     },
-    "metrics": {
-        "SAE": {
-            "threshold": 0.02465418167412281,
-            "TP": 22220,
-            "FP": 816,
-            "TN": 15588,
-            "FN": 2780,
-            "FPR": 0.04974396488661302,
-            "FNR": 0.1112,
-            "Precision": 0.9645771835388088,
-            "Recall": 0.8888,
-            "F1": 0.9251394787242901,
-            "ROC_AUC": 0.9726835369422092,
-            "PR_AUC": 0.9554898734418776
+    "evaluation_metrics": {
+        "Baseline_1_SAE": {
+            "threshold": 0.0008977684774436057,
+            "TP": 21282,
+            "FP": 1195,
+            "TN": 23805,
+            "FN": 3718,
+            "FPR": 0.0478,
+            "FNR": 0.14872,
+            "Precision": 0.9468345419762424,
+            "Recall_TPR": 0.85128,
+            "F1_Score": 0.896518314131053,
+            "ROC_AUC": 0.9654788287999999,
+            "PR_AUC": 0.9186788315587936
         },
-        "IForest": {
-            "threshold": 0.7463310360908508,
-            "TP": 2598,
-            "FP": 756,
-            "TN": 15648,
-            "FN": 22402,
-            "FPR": 0.046086320409656184,
-            "FNR": 0.89608,
-            "Precision": 0.774597495527728,
-            "Recall": 0.10392,
-            "F1": 0.18325456725682443,
-            "ROC_AUC": 0.9021623652767617,
-            "PR_AUC": 0.8687783183155732
+        "Baseline_2_IForest": {
+            "threshold": 0.5229777097702026,
+            "TP": 21078,
+            "FP": 1153,
+            "TN": 23847,
+            "FN": 3922,
+            "FPR": 0.04612,
+            "FNR": 0.15688,
+            "Precision": 0.9481354864828393,
+            "Recall_TPR": 0.84312,
+            "F1_Score": 0.8925493849378586,
+            "ROC_AUC": 0.9716716879999999,
+            "PR_AUC": 0.9752898343196553
         },
-        "Hybrid_SAE_IForest": {
-            "threshold": 0.3805471658706665,
-            "TP": 13627,
-            "FP": 786,
-            "TN": 15618,
-            "FN": 11373,
-            "FPR": 0.0479151426481346,
-            "FNR": 0.45492,
-            "Precision": 0.9454658988413238,
-            "Recall": 0.54508,
-            "F1": 0.6914977291756527,
-            "ROC_AUC": 0.9281713728358937,
-            "PR_AUC": 0.8972159910824832
+        "Proposed_Hybrid": {
+            "threshold": 0.2698139548301697,
+            "TP": 21078,
+            "FP": 1142,
+            "TN": 23858,
+            "FN": 3922,
+            "FPR": 0.04568,
+            "FNR": 0.15688,
+            "Precision": 0.9486048604860486,
+            "Recall_TPR": 0.84312,
+            "F1_Score": 0.8927573062261753,
+            "ROC_AUC": 0.970701448,
+            "PR_AUC": 0.9714493903734709
         }
     }
 }
