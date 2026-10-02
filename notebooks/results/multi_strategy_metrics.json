@@ -1,0 +1,72 @@
+{
+    "Baseline 1: SAE Alone": {
+        "Threshold": 0.000576,
+        "TP": 22542,
+        "FP": 1099,
+        "TN": 23901,
+        "FN": 2458,
+        "FPR (%)": 4.4,
+        "FNR (%)": 9.83,
+        "Precision (%)": 95.35,
+        "Recall (%)": 90.17,
+        "F1-Score": 0.9269,
+        "ROC-AUC": 0.9626,
+        "PR-AUC": 0.917
+    },
+    "Baseline 2: IForest Alone": {
+        "Threshold": 0.475402,
+        "TP": 22320,
+        "FP": 1302,
+        "TN": 23698,
+        "FN": 2680,
+        "FPR (%)": 5.21,
+        "FNR (%)": 10.72,
+        "Precision (%)": 94.49,
+        "Recall (%)": 89.28,
+        "F1-Score": 0.9181,
+        "ROC-AUC": 0.9752,
+        "PR-AUC": 0.9806
+    },
+    "Strategi A: Weighted Linear (\u03b1=0.5)": {
+        "Threshold": 0.23798,
+        "TP": 22320,
+        "FP": 1301,
+        "TN": 23699,
+        "FN": 2680,
+        "FPR (%)": 5.2,
+        "FNR (%)": 10.72,
+        "Precision (%)": 94.49,
+        "Recall (%)": 89.28,
+        "F1-Score": 0.9181,
+        "ROC-AUC": 0.9751,
+        "PR-AUC": 0.9792
+    },
+    "Strategi B: Max-Normalized Fusion": {
+        "Threshold": 1.162009,
+        "TP": 22623,
+        "FP": 1154,
+        "TN": 23846,
+        "FN": 2377,
+        "FPR (%)": 4.62,
+        "FNR (%)": 9.51,
+        "Precision (%)": 95.15,
+        "Recall (%)": 90.49,
+        "F1-Score": 0.9276,
+        "ROC-AUC": 0.9678,
+        "PR-AUC": 0.9424
+    },
+    "Strategi C: Decision Logic OR-Rule": {
+        "Threshold": "OR Rule",
+        "TP": 22633,
+        "FP": 1935,
+        "TN": 23065,
+        "FN": 2367,
+        "FPR (%)": 7.74,
+        "FNR (%)": 9.47,
+        "Precision (%)": 92.12,
+        "Recall (%)": 90.53,
+        "F1-Score": 0.9132,
+        "ROC-AUC": 0.9678,
+        "PR-AUC": 0.9424
+    }
+}
