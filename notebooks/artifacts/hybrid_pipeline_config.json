@@ -1,0 +1,75 @@
+{
+    "model_name": "Dual-Level Hybrid NIDS: SAE Latent Representation + Max-Rank Decision Fusion",
+    "dataset": "NF-UQ-NIDS-v2",
+    "feature_count": 39,
+    "latent_dim": 16,
+    "iforest_estimators": 100,
+    "normalization_bounds": {
+        "sae_bounds": [
+            4.4830169798615316e-08,
+            0.022720495238900185
+        ],
+        "if_bounds_A": [
+            0.40515813582358784,
+            0.6957502491515317
+        ]
+    },
+    "thresholds": {
+        "percentile_95": {
+            "tau_val": 0.9708049999999999,
+            "macro_recall": 93.24,
+            "fpr": 4.93,
+            "f1_score": 0.941,
+            "roc_auc": 0.9834
+        },
+        "percentile_97_optimal": {
+            "tau_val": 0.9832029999999998,
+            "macro_recall": 90.5,
+            "fpr": 2.93,
+            "f1_score": 0.9358,
+            "roc_auc": 0.9834
+        }
+    },
+    "feature_columns": [
+        "PROTOCOL",
+        "L7_PROTO",
+        "IN_BYTES",
+        "IN_PKTS",
+        "OUT_BYTES",
+        "OUT_PKTS",
+        "TCP_FLAGS",
+        "CLIENT_TCP_FLAGS",
+        "SERVER_TCP_FLAGS",
+        "FLOW_DURATION_MILLISECONDS",
+        "DURATION_IN",
+        "DURATION_OUT",
+        "MIN_TTL",
+        "MAX_TTL",
+        "LONGEST_FLOW_PKT",
+        "SHORTEST_FLOW_PKT",
+        "MIN_IP_PKT_LEN",
+        "MAX_IP_PKT_LEN",
+        "SRC_TO_DST_SECOND_BYTES",
+        "DST_TO_SRC_SECOND_BYTES",
+        "RETRANSMITTED_IN_BYTES",
+        "RETRANSMITTED_IN_PKTS",
+        "RETRANSMITTED_OUT_BYTES",
+        "RETRANSMITTED_OUT_PKTS",
+        "SRC_TO_DST_AVG_THROUGHPUT",
+        "DST_TO_SRC_AVG_THROUGHPUT",
+        "NUM_PKTS_UP_TO_128_BYTES",
+        "NUM_PKTS_128_TO_256_BYTES",
+        "NUM_PKTS_256_TO_512_BYTES",
+        "NUM_PKTS_512_TO_1024_BYTES",
+        "NUM_PKTS_1024_TO_1514_BYTES",
+        "TCP_WIN_MAX_IN",
+        "TCP_WIN_MAX_OUT",
+        "ICMP_TYPE",
+        "ICMP_IPV4_TYPE",
+        "DNS_QUERY_ID",
+        "DNS_QUERY_TYPE",
+        "DNS_TTL_ANSWER",
+        "FTP_COMMAND_RET_CODE"
+    ],
+    "random_seed": 42
+}

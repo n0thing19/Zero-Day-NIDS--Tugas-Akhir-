@@ -1,0 +1,12 @@
+{
+    "model_name": "Isolation Forest (Latent Only - Exp A)",
+    "n_estimators": 100,
+    "input_dimension": 16,
+    "threshold_percentile": 95.0,
+    "tau_if_A": 0.5221113562583923,
+    "if_bounds_A": [
+        0.40515813582358784,
+        0.6957502491515317
+    ],
+    "random_state": 42
+}
