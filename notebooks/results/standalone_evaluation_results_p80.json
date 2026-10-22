@@ -1,0 +1,43 @@
+{
+    "metrics_py": {
+        "Baseline 1: SAE Alone": {
+            "TP": 19449,
+            "FP": 1100,
+            "TN": 23900,
+            "FN": 5551,
+            "FPR (%)": 4.4,
+            "Recall (%)": 77.8,
+            "FNR (%)": 22.2,
+            "Precision (%)": 94.65,
+            "F1-Score": 0.854,
+            "ROC-AUC": 0.9238,
+            "PR-AUC": 0.8972
+        },
+        "Eksperimen A: IF(Z) [Latent P80]": {
+            "TP": 22915,
+            "FP": 4872,
+            "TN": 20128,
+            "FN": 2085,
+            "FPR (%)": 19.49,
+            "Recall (%)": 91.66,
+            "FNR (%)": 8.34,
+            "Precision (%)": 82.47,
+            "F1-Score": 0.8682,
+            "ROC-AUC": 0.9524,
+            "PR-AUC": 0.9629
+        },
+        "Proposed: Max-Rank (P80)": {
+            "TP": 23744,
+            "FP": 6923,
+            "TN": 18077,
+            "FN": 1256,
+            "FPR (%)": 27.69,
+            "Recall (%)": 94.98,
+            "FNR (%)": 5.02,
+            "Precision (%)": 77.43,
+            "F1-Score": 0.8531,
+            "ROC-AUC": 0.9525,
+            "PR-AUC": 0.9633
+        }
+    }
+}
