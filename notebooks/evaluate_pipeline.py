@@ -2,7 +2,13 @@ from pathlib import Path
 import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
-from sklearn.metrics import confusion_matrix, f1_score, precision_score, recall_score
+from sklearn.metrics import (
+    confusion_matrix,
+    f1_score,
+    precision_score,
+    recall_score,
+    roc_auc_score,
+)
 
 # ==============================================================================
 # 1. KONFIGURASI PATH & PEMUATAN DATA
@@ -58,50 +64,56 @@ for pct in percentiles:
     prec = precision_score(y_true, y_pred, pos_label=1, zero_division=0) * 100
     f1 = f1_score(y_true, y_pred, pos_label=1, zero_division=0)
 
+    try:
+        auc = roc_auc_score(y_true, y_pred)
+    except ValueError:
+        auc = 0.5
+
     records.append({
         "Percentile": pct,
         "Threshold": tau,
         "FPR": fpr,
-        "FNR": fnr,
         "Recall": rec,
+        "FNR": fnr,
         "Precision": prec,
-        "F1": f1,
+        "F1-Score": f1,
+        "ROC-AUC": auc,
         "F1_x100": f1 * 100,
         "Diff_FPR_FNR": abs(fpr - fnr)
     })
 
 df_metrics = pd.DataFrame(records)
 
-# Cari titik EER (selisih FPR dan FNR terkecil)
+# Cari titik EER dan F1 Optimum
 eer_idx = df_metrics["Diff_FPR_FNR"].idxmin()
 eer_row = df_metrics.loc[eer_idx]
 eer_pct = eer_row["Percentile"]
 eer_val = (eer_row["FPR"] + eer_row["FNR"]) / 2
 
-# Cari titik F1-Score Maksimum
-f1_idx = df_metrics["F1"].idxmax()
+f1_idx = df_metrics["F1-Score"].idxmax()
 f1_row = df_metrics.loc[f1_idx]
 f1_opt_pct = f1_row["Percentile"]
 
-print("=" * 75)
-print(f"TITIK EQUAL ERROR RATE (EER):")
-print(f"Persentil     : {eer_pct:.1f}%")
-print(f"Threshold (Tau): {eer_row['Threshold']:.4f}")
-print(f"FPR / FNR     : {eer_row['FPR']:.2f}% / {eer_row['FNR']:.2f}% (Rata-rata EER: ~{eer_val:.2f}%)")
-print(f"F1-Score      : {eer_row['F1']:.4f}")
-print("-" * 75)
-print(f"TITIK OPTIMUM F1-SCORE:")
-print(f"Persentil     : {f1_opt_pct:.1f}%")
-print(f"Threshold (Tau): {f1_row['Threshold']:.4f}")
-print(f"F1-Score      : {f1_row['F1']:.4f} (Recall: {f1_row['Recall']:.2f}%, FPR: {f1_row['FPR']:.2f}%)")
-print("=" * 75)
-
-# Simpan tabel ke format CSV
-df_metrics.to_csv(RESULTS_DIR / "eer_percentile_analysis.csv", index=False)
+# Simpan CSV dengan format kolom sesuai permintaan
+target_cols = [
+    "Percentile",
+    "Threshold",
+    "FPR",
+    "Recall",
+    "FNR",
+    "Precision",
+    "F1-Score",
+    "ROC-AUC"
+]
+csv_output_path = RESULTS_DIR / "percentile_metrics_analysis.csv"
+df_metrics[target_cols].to_csv(csv_output_path, index=False)
+print(f"[OK] Data metrik berhasil disimpan ke: {csv_output_path}")
 
 # ==============================================================================
-# 4. PLOTTING GRAFIK KOMPARATIF (2 SUBPLOTS)
+# 4. PLOTTING GRAFIK KOMPARATIF DENGAN PENANDA PROPOSED (97%)
 # ==============================================================================
+PROPOSED_PCT = 97.0
+
 fig, (ax1, ax2) = plt.subplots(2, 1, figsize=(12, 10), sharex=True)
 
 # Subplot 1: Trade-off Error Rates (FPR vs FNR)
@@ -111,6 +123,12 @@ ax1.plot(df_metrics["Percentile"], df_metrics["FNR"], marker="s", markersize=4,
          color="#d62728", linewidth=1.5, label="FNR (False Negative Rate)")
 ax1.axvline(x=eer_pct, color="gray", linestyle="--", linewidth=1.5, 
             label=f"EER ~ {eer_pct:.1f}% (Error ~ {eer_val:.2f}%)")
+
+# Garis Proposed pada 97%
+ax1.axvline(x=PROPOSED_PCT, color="#b20a2c", linestyle="-.", linewidth=2, 
+            label=f"Proposed ({PROPOSED_PCT:.0f}%)")
+ax1.text(PROPOSED_PCT + 0.3, ax1.get_ylim()[1] * 0.85, "Proposed (97%)", 
+         color="#b20a2c", fontsize=10, fontweight="bold", rotation=90, verticalalignment="top")
 
 ax1.set_title("Trade-off Error Rates (FPR vs FNR)", fontsize=12, fontweight="bold")
 ax1.set_ylabel("Error Rate (%)", fontsize=11, fontweight="bold")
@@ -127,6 +145,12 @@ ax2.plot(df_metrics["Percentile"], df_metrics["F1_x100"], marker="d", markersize
 ax2.axvline(x=f1_opt_pct, color="#7f7f7f", linestyle=":", linewidth=1.5, 
             label=f"Optimum F1 ({f1_opt_pct:.1f}%)")
 
+# Garis Proposed pada 97%
+ax2.axvline(x=PROPOSED_PCT, color="#b20a2c", linestyle="-.", linewidth=2, 
+            label=f"Proposed ({PROPOSED_PCT:.0f}%)")
+ax2.text(PROPOSED_PCT + 0.3, ax2.get_ylim()[0] + 15, "Proposed (97%)", 
+         color="#b20a2c", fontsize=10, fontweight="bold", rotation=90, verticalalignment="bottom")
+
 ax2.set_title("Kurva Precision, Recall, dan F1-Score", fontsize=12, fontweight="bold")
 ax2.set_xlabel("Threshold Persentil CDF (%)", fontsize=11, fontweight="bold")
 ax2.set_ylabel("Skor Performa (%)", fontsize=11, fontweight="bold")
@@ -138,8 +162,8 @@ ax2.set_xticks(np.arange(80, 100, 2))
 ax2.set_xlim(79.5, 99.5)
 
 plt.tight_layout()
-chart_path = RESULTS_DIR / "tradeoff_eer_curve.png"
+chart_path = RESULTS_DIR / "tradeoff_eer_curve_with_proposed.png"
 plt.savefig(chart_path, dpi=300, bbox_inches="tight")
 plt.show()
 
-print(f"\n[OK] Grafik berhasil dibuat dan disimpan di: {chart_path}")
+print(f"[OK] Grafik berhasil dibuat dan disimpan di: {chart_path}")

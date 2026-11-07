@@ -9,8 +9,6 @@
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
-  
-  <!-- Chart.js for Visualizations -->
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
   <script>
@@ -18,17 +16,17 @@
       darkMode: 'class',
       theme: {
         extend: {
-          colors: {
-            soc: {
-              950: '#090d16',
-              900: '#0f172a',
-              800: '#1e293b',
-              700: '#334155',
-            }
+          fontFamily: { 
+            sans: ['Inter', 'sans-serif'], 
+            mono: ['JetBrains Mono', 'monospace'] 
           },
-          fontFamily: {
-            sans: ['Inter', 'sans-serif'],
-            mono: ['JetBrains Mono', 'monospace']
+          colors: { 
+            surface: { 
+              950: '#09090b', 
+              900: '#121215', 
+              800: '#1e1e24', 
+              700: '#27272a' 
+            } 
           }
         }
       }
@@ -36,772 +34,609 @@
   </script>
 
   <style>
-    ::-webkit-scrollbar { width: 6px; height: 6px; }
-    ::-webkit-scrollbar-track { background: #090d16; }
-    ::-webkit-scrollbar-thumb { background: #334155; border-radius: 4px; }
-    ::-webkit-scrollbar-thumb:hover { background: #06b6d4; }
+    ::-webkit-scrollbar { width: 5px; height: 5px; }
+    ::-webkit-scrollbar-track { background: #09090b; }
+    ::-webkit-scrollbar-thumb { background: #27272a; }
+    .panel { background: #121215; border: 1px solid #27272a; border-radius: 6px; }
+    .mono-num { font-variant-numeric: tabular-nums; }
   </style>
 </head>
 
-<body class="bg-soc-950 text-slate-100 font-sans antialiased h-screen flex overflow-hidden selection:bg-cyan-500/30 selection:text-cyan-200">
+<body class="bg-surface-950 text-zinc-200 font-sans text-sm h-screen flex overflow-hidden selection:bg-sky-500/30 selection:text-sky-200">
 
-  <!-- ===================================================================== -->
-  <!-- SIDEBAR NAVIGATION (MENUS 1 TO 6)                                     -->
-  <!-- ===================================================================== -->
-  <aside class="w-72 bg-soc-900 border-r border-soc-800 flex flex-col justify-between shrink-0 select-none z-20">
-    
-    <!-- Top Brand Identity -->
+  <!-- SIDEBAR NAVIGATION (MENUS 1 - 6) -->
+  <aside class="w-64 bg-surface-900 border-r border-surface-700 flex flex-col justify-between shrink-0 select-none z-20">
     <div>
-      <div class="p-6 border-b border-soc-800 flex items-center gap-3.5">
-        <div class="w-10 h-10 rounded-xl bg-cyan-500/10 border border-cyan-500/30 flex items-center justify-center text-cyan-400 shadow-inner">
-          <svg class="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z" />
-          </svg>
+      <div class="h-14 px-5 border-b border-surface-700 flex items-center justify-between">
+        <div class="flex items-center gap-2.5">
+          <span class="w-2.5 h-2.5 rounded-xs bg-sky-500"></span>
+          <span class="font-semibold tracking-tight text-white">NIDS STUDIO</span>
         </div>
-        <div>
-          <h1 class="font-bold text-base tracking-tight text-white">NIDS Studio</h1>
-          <p class="text-xs text-cyan-400 font-mono">SAE + IForest ECDF</p>
-        </div>
+        <span class="font-mono text-[11px] text-zinc-400 border border-surface-700 px-1.5 py-0.5 rounded">v2.4</span>
       </div>
 
-      <!-- Navigation Menu 1 - 6 -->
-      <div class="p-4">
-        <div class="text-[11px] font-semibold uppercase tracking-wider text-slate-500 px-3 mb-2">Menu Navigasi Utama</div>
-        <nav class="space-y-1.5">
-          
-          <button onclick="switchMenu('menu-1')" id="nav-menu-1" class="nav-item w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition-all bg-cyan-500/10 text-cyan-400 border border-cyan-500/20">
-            <span class="w-6 h-6 rounded-lg bg-cyan-500/20 text-cyan-300 flex items-center justify-center font-mono text-xs font-bold">1</span>
+      <div class="p-3">
+        <div class="text-[11px] font-mono uppercase text-zinc-500 px-2.5 py-1.5">Console Views</div>
+        <nav id="sidebarNav" class="space-y-0.5">
+          <button onclick="switchMenu('menu-1')" id="nav-menu-1" class="nav-item w-full flex items-center gap-3 px-2.5 py-2 rounded text-xs font-medium transition bg-surface-800 text-white border border-surface-700">
+            <span class="font-mono text-[11px] w-5 h-5 rounded flex items-center justify-center border border-surface-700">1</span>
             <span>Live Simulation</span>
           </button>
-
-          <button onclick="switchMenu('menu-2')" id="nav-menu-2" class="nav-item w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-soc-800/60 border border-transparent transition-all">
-            <span class="w-6 h-6 rounded-lg bg-soc-800 text-slate-400 flex items-center justify-center font-mono text-xs font-bold">2</span>
+          <button onclick="switchMenu('menu-2')" id="nav-menu-2" class="nav-item w-full flex items-center gap-3 px-2.5 py-2 rounded text-xs font-medium text-zinc-400 hover:text-zinc-200 hover:bg-surface-800/50 transition">
+            <span class="font-mono text-[11px] w-5 h-5 rounded flex items-center justify-center border border-surface-700">2</span>
             <span>Model Comparison</span>
           </button>
-
-          <button onclick="switchMenu('menu-3')" id="nav-menu-3" class="nav-item w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-soc-800/60 border border-transparent transition-all">
-            <span class="w-6 h-6 rounded-lg bg-soc-800 text-slate-400 flex items-center justify-center font-mono text-xs font-bold">3</span>
+          <button onclick="switchMenu('menu-3')" id="nav-menu-3" class="nav-item w-full flex items-center gap-3 px-2.5 py-2 rounded text-xs font-medium text-zinc-400 hover:text-zinc-200 hover:bg-surface-800/50 transition">
+            <span class="font-mono text-[11px] w-5 h-5 rounded flex items-center justify-center border border-surface-700">3</span>
             <span>Threshold Lab</span>
           </button>
-
-          <button onclick="switchMenu('menu-4')" id="nav-menu-4" class="nav-item w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-soc-800/60 border border-transparent transition-all">
-            <span class="w-6 h-6 rounded-lg bg-soc-800 text-slate-400 flex items-center justify-center font-mono text-xs font-bold">4</span>
+          <button onclick="switchMenu('menu-4')" id="nav-menu-4" class="nav-item w-full flex items-center gap-3 px-2.5 py-2 rounded text-xs font-medium text-zinc-400 hover:text-zinc-200 hover:bg-surface-800/50 transition">
+            <span class="font-mono text-[11px] w-5 h-5 rounded flex items-center justify-center border border-surface-700">4</span>
             <span>Anomaly Explorer</span>
           </button>
-
-          <button onclick="switchMenu('menu-5')" id="nav-menu-5" class="nav-item w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-soc-800/60 border border-transparent transition-all">
-            <span class="w-6 h-6 rounded-lg bg-soc-800 text-slate-400 flex items-center justify-center font-mono text-xs font-bold">5</span>
+          <button onclick="switchMenu('menu-5')" id="nav-menu-5" class="nav-item w-full flex items-center gap-3 px-2.5 py-2 rounded text-xs font-medium text-zinc-400 hover:text-zinc-200 hover:bg-surface-800/50 transition">
+            <span class="font-mono text-[11px] w-5 h-5 rounded flex items-center justify-center border border-surface-700">5</span>
             <span>CSV Batch Analysis</span>
           </button>
-
-          <button onclick="switchMenu('menu-6')" id="nav-menu-6" class="nav-item w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-soc-800/60 border border-transparent transition-all">
-            <span class="w-6 h-6 rounded-lg bg-soc-800 text-slate-400 flex items-center justify-center font-mono text-xs font-bold">6</span>
+          <button onclick="switchMenu('menu-6')" id="nav-menu-6" class="nav-item w-full flex items-center gap-3 px-2.5 py-2 rounded text-xs font-medium text-zinc-400 hover:text-zinc-200 hover:bg-surface-800/50 transition">
+            <span class="font-mono text-[11px] w-5 h-5 rounded flex items-center justify-center border border-surface-700">6</span>
             <span>Experiment &amp; Artifacts</span>
           </button>
-
         </nav>
       </div>
     </div>
 
-    <!-- Bottom AI Engine Connection Status -->
-    <div class="p-4 border-t border-soc-800 bg-soc-950/50 space-y-3">
+    <!-- Backend Status Footer -->
+    <div class="p-3.5 border-t border-surface-700 bg-surface-950/60 space-y-2.5 text-xs">
       <div class="flex items-center justify-between">
-        <span class="text-xs text-slate-400 font-medium">Engine Mode</span>
-        <span id="engineStatusBadge" class="px-2 py-0.5 text-[11px] font-mono rounded-md bg-amber-500/10 text-amber-400 border border-amber-500/20">
-          Checking...
-        </span>
+        <span class="text-zinc-400">Inference Engine</span>
+        <span id="engineStatusBadge" class="font-mono text-[11px] px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300">Checking...</span>
       </div>
-      <div class="text-[11px] text-slate-400 font-mono space-y-1 bg-soc-900 p-2.5 rounded-lg border border-soc-800">
-        <div class="truncate">SAE: <span class="text-slate-200">sae_autoencoder_final.pth</span></div>
-        <div class="truncate">IF: <span class="text-slate-200">iforest_latent_final.joblib</span></div>
-        <div class="truncate">Ref: <span class="text-cyan-400">sae/ifz_calib_norm_ref.npy</span></div>
+      <div class="font-mono text-[11px] text-zinc-400 space-y-0.5 leading-relaxed border-t border-surface-800 pt-2">
+        <div class="truncate">SAE: <span class="text-zinc-300">sae_autoencoder_final.pth</span></div>
+        <div class="truncate">IF: <span class="text-zinc-300">iforest_latent_final.joblib</span></div>
+        <div class="truncate">Ref: <span class="text-sky-400">sae/ifz_calib_norm_ref.npy</span></div>
       </div>
-      <button onclick="checkBackendConnection()" class="w-full py-2 px-3 rounded-lg bg-soc-800 hover:bg-soc-700 text-xs font-medium text-slate-200 transition flex items-center justify-center gap-2">
-        <svg class="w-3.5 h-3.5 text-cyan-400" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-        </svg>
+      <button onclick="checkBackendConnection()" class="w-full py-1.5 bg-surface-800 hover:bg-surface-700 border border-surface-700 rounded text-xs font-medium text-zinc-200 transition">
         Sync Backend (`app.py`)
       </button>
     </div>
-
   </aside>
 
-  <!-- ===================================================================== -->
-  <!-- MAIN CONTENT AREA                                                     -->
-  <!-- ===================================================================== -->
+  <!-- MAIN WORKSPACE -->
   <div class="flex-1 flex flex-col h-full overflow-hidden">
 
-    <!-- Top Header Bar -->
-    <header class="h-16 border-b border-soc-800 bg-soc-900/60 backdrop-blur px-8 flex items-center justify-between shrink-0">
-      <div>
-        <h2 id="pageHeaderTitle" class="text-lg font-bold text-white">1. Live Traffic Simulation &amp; Monitoring</h2>
-      </div>
-
-      <div class="flex items-center gap-4">
-        <!-- Active Threshold Indicator -->
-        <div class="flex items-center gap-2 bg-soc-800/90 px-3.5 py-1.5 rounded-xl border border-soc-700 text-xs">
-          <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
-          <span class="text-slate-400">Operating Point:</span>
-          <span id="headerThresholdText" class="font-mono font-semibold text-cyan-400">P97 (&tau; = 0.9832)</span>
+    <!-- Top Status Bar -->
+    <header class="h-14 border-b border-surface-700 bg-surface-900 px-6 flex items-center justify-between shrink-0">
+      <h1 id="pageHeaderTitle" class="font-semibold text-white text-sm">1. Live Traffic Simulation &amp; Monitoring</h1>
+      <div class="flex items-center gap-3 font-mono text-xs">
+        <div class="px-2.5 py-1 bg-surface-950 border border-surface-700 rounded flex items-center gap-2">
+          <span class="text-zinc-400">Operating Point:</span>
+          <span id="headerThresholdText" class="text-sky-400 font-medium">P97 (&tau; = 0.9832)</span>
         </div>
-
-        <!-- System Clock -->
-        <div class="bg-soc-800/90 px-3.5 py-1.5 rounded-xl border border-soc-700 text-xs font-mono text-slate-300" id="systemClock">
+        <div id="systemClock" class="px-2.5 py-1 bg-surface-950 border border-surface-700 rounded text-zinc-400 mono-num">
           00:00:00 WIB
         </div>
       </div>
     </header>
 
-    <!-- Scrollable Page Body -->
-    <main class="flex-1 overflow-y-auto p-8 max-w-7xl w-full mx-auto space-y-8">
+    <!-- Content Container -->
+    <main class="flex-1 overflow-y-auto p-6 max-w-7xl w-full mx-auto space-y-6">
 
-      <!-- ================================================================= -->
-      <!-- MENU 1: LIVE SIMULATION & MONITORING                              -->
-      <!-- ================================================================= -->
-      <section id="menu-1" class="menu-section space-y-8">
-        
-        <!-- 4 Clean KPI Cards -->
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-6">
-          <div class="bg-soc-900 border border-soc-800 rounded-2xl p-5">
-            <span class="text-xs font-medium text-slate-400">Total Flows Processed</span>
-            <div class="text-3xl font-bold text-white font-mono mt-2" id="kpiTotal">0</div>
-            <span class="text-xs text-slate-500 mt-1 block">Interval: <span id="kpiIntervalText">1.0s</span></span>
+      <!-- =============================================================== -->
+      <!-- MENU 1: LIVE SIMULATION & MONITORING                            -->
+      <!-- =============================================================== -->
+      <section id="menu-1" class="menu-section space-y-6">
+        <!-- KPI Strip -->
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+          <div class="panel p-4">
+            <div class="text-xs text-zinc-400">Processed Flows</div>
+            <div id="kpiTotal" class="text-2xl font-semibold text-white font-mono mono-num mt-1">0</div>
+            <div class="text-[11px] text-zinc-500 mt-1 font-mono">Interval: <span id="kpiIntervalText">1000ms</span></div>
           </div>
-
-          <div class="bg-soc-900 border border-soc-800 rounded-2xl p-5">
-            <span class="text-xs font-medium text-slate-400">Anomalies Flagged</span>
-            <div class="text-3xl font-bold text-rose-400 font-mono mt-2" id="kpiAnomalies">0</div>
-            <span class="text-xs text-slate-500 mt-1 block" id="kpiAnomalyRate">0.0% dari total aliran</span>
+          <div class="panel p-4">
+            <div class="text-xs text-zinc-400">Anomalies Flagged</div>
+            <div id="kpiAnomalies" class="text-2xl font-semibold text-rose-400 font-mono mono-num mt-1">0</div>
+            <div id="kpiAnomalyRate" class="text-[11px] text-zinc-500 mt-1 font-mono">0.0% of traffic</div>
           </div>
-
-          <div class="bg-soc-900 border border-soc-800 rounded-2xl p-5">
-            <span class="text-xs font-medium text-slate-400">Detection Recall (TPR)</span>
-            <div class="text-3xl font-bold text-cyan-400 font-mono mt-2" id="kpiRecall">90.50%</div>
-            <span class="text-xs text-slate-500 mt-1 block">Target Zero-Day &ge; 87%</span>
+          <div class="panel p-4">
+            <div class="text-xs text-zinc-400">Detection Recall (TPR)</div>
+            <div id="kpiRecall" class="text-2xl font-semibold text-sky-400 font-mono mono-num mt-1">90.50%</div>
+            <div class="text-[11px] text-zinc-500 mt-1 font-mono">Target Zero-Day &ge; 87%</div>
           </div>
-
-          <div class="bg-soc-900 border border-soc-800 rounded-2xl p-5">
-            <span class="text-xs font-medium text-slate-400">False Positive Rate (FPR)</span>
-            <div class="text-3xl font-bold text-emerald-400 font-mono mt-2" id="kpiFpr">2.93%</div>
-            <span class="text-xs text-slate-500 mt-1 block">Target Reduksi &lt; 3.00%</span>
+          <div class="panel p-4">
+            <div class="text-xs text-zinc-400">False Positive Rate (FPR)</div>
+            <div id="kpiFpr" class="text-2xl font-semibold text-emerald-400 font-mono mono-num mt-1">2.93%</div>
+            <div class="text-[11px] text-zinc-500 mt-1 font-mono">Target Bound &lt; 3.00%</div>
           </div>
         </div>
 
-        <!-- Main Grid: Left Controller (4 cols) & Right Chart (8 cols) -->
-        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
-          
-          <!-- Left Control Panel -->
-          <div class="lg:col-span-4 space-y-6">
-            
-            <!-- Stream Control -->
-            <div class="bg-soc-900 border border-soc-800 rounded-2xl p-6 space-y-5">
-              <div class="flex items-center justify-between">
-                <h3 class="font-semibold text-white text-sm">Simulation Control</h3>
-                <span id="streamStatusChip" class="px-2.5 py-0.5 text-xs font-mono rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                  RUNNING
-                </span>
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+          <!-- Controls & Injection -->
+          <div class="lg:col-span-4 space-y-4">
+            <div class="panel p-4 space-y-4">
+              <div class="flex items-center justify-between border-b border-surface-700 pb-2.5">
+                <span class="font-medium text-xs uppercase tracking-wider text-zinc-400">Stream Controller</span>
+                <span id="streamStatusChip" class="font-mono text-[11px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">RUNNING</span>
               </div>
-
-              <div class="grid grid-cols-2 gap-3">
-                <button onclick="toggleSimulation()" id="btnPlayPause" class="py-2.5 px-4 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-soc-950 font-semibold text-xs transition">
-                  Pause Stream
-                </button>
-                <button onclick="resetSimulation()" class="py-2.5 px-4 rounded-xl bg-soc-800 hover:bg-soc-700 text-slate-200 font-medium text-xs border border-soc-700 transition">
-                  Reset Data
-                </button>
+              <div class="grid grid-cols-2 gap-2">
+                <button id="btnPlayPause" onclick="toggleSimulation()" class="py-2 bg-sky-600 hover:bg-sky-500 text-white font-medium rounded text-xs transition">Pause Stream</button>
+                <button onclick="resetSimulation()" class="py-2 bg-surface-800 hover:bg-surface-700 border border-surface-700 text-zinc-200 rounded text-xs transition">Reset Data</button>
               </div>
-
-              <!-- Speed Control -->
-              <div class="pt-2 border-t border-soc-800">
-                <div class="flex justify-between text-xs text-slate-400 mb-2">
-                  <span>Kecepatan Aliran:</span>
-                  <span id="speedLabel" class="font-mono text-cyan-400">1000 ms</span>
-                </div>
-                <input type="range" min="300" max="2000" step="100" value="1000" oninput="changeSpeed(this.value)" class="w-full accent-cyan-400 cursor-pointer">
-              </div>
-            </div>
-
-            <!-- Zero-Day Attack Toggles -->
-            <div class="bg-soc-900 border border-soc-800 rounded-2xl p-6 space-y-4">
               <div>
-                <h3 class="font-semibold text-white text-sm">Zero-Day Attack Injection</h3>
-                <p class="text-xs text-slate-400 mt-1">Pilih skenario serangan dari folder <code class="text-cyan-400">unseen_attack_test_parts</code>:</p>
-              </div>
-
-              <div class="space-y-2.5">
-                <label class="flex items-center justify-between p-3 rounded-xl bg-soc-950 border border-soc-800 hover:border-soc-700 cursor-pointer transition">
-                  <div>
-                    <div class="text-xs font-semibold text-slate-200">Botnet Activity</div>
-                    <div class="text-[11px] text-slate-500">Recall P97: 100.0%</div>
-                  </div>
-                  <input type="checkbox" onchange="toggleAttack('Bot', this.checked)" class="w-4 h-4 accent-cyan-400 rounded">
-                </label>
-
-                <label class="flex items-center justify-between p-3 rounded-xl bg-soc-950 border border-soc-800 hover:border-soc-700 cursor-pointer transition">
-                  <div>
-                    <div class="text-xs font-semibold text-slate-200">SSH / FTP Brute Force</div>
-                    <div class="text-[11px] text-slate-500">Recall P97: 87.62% (Stealth)</div>
-                  </div>
-                  <input type="checkbox" onchange="toggleAttack('Brute Force', this.checked)" class="w-4 h-4 accent-cyan-400 rounded">
-                </label>
-
-                <label class="flex items-center justify-between p-3 rounded-xl bg-soc-950 border border-soc-800 hover:border-soc-700 cursor-pointer transition">
-                  <div>
-                    <div class="text-xs font-semibold text-slate-200">DDoS Volumetric</div>
-                    <div class="text-[11px] text-slate-500">Recall P97: 87.96%</div>
-                  </div>
-                  <input type="checkbox" onchange="toggleAttack('DDoS', this.checked)" class="w-4 h-4 accent-cyan-400 rounded">
-                </label>
-
-                <label class="flex items-center justify-between p-3 rounded-xl bg-soc-950 border border-soc-800 hover:border-soc-700 cursor-pointer transition">
-                  <div>
-                    <div class="text-xs font-semibold text-slate-200">DoS Slowloris / Hulk</div>
-                    <div class="text-[11px] text-slate-500">Recall P97: 87.64%</div>
-                  </div>
-                  <input type="checkbox" onchange="toggleAttack('DoS', this.checked)" class="w-4 h-4 accent-cyan-400 rounded">
-                </label>
-
-                <label class="flex items-center justify-between p-3 rounded-xl bg-soc-950 border border-soc-800 hover:border-soc-700 cursor-pointer transition">
-                  <div>
-                    <div class="text-xs font-semibold text-slate-200">Reconnaissance / Scan</div>
-                    <div class="text-[11px] text-slate-500">Recall P97: 89.30%</div>
-                  </div>
-                  <input type="checkbox" onchange="toggleAttack('Reconnaissance', this.checked)" class="w-4 h-4 accent-cyan-400 rounded">
-                </label>
+                <div class="flex justify-between text-xs text-zinc-400 mb-1">
+                  <span>Polling Interval</span>
+                  <span id="speedLabel" class="font-mono text-zinc-200">1000 ms</span>
+                </div>
+                <input type="range" min="300" max="2000" step="100" value="1000" oninput="changeSpeed(this.value)" class="w-full accent-sky-500 cursor-pointer">
               </div>
             </div>
 
+            <div class="panel p-4 space-y-3">
+              <div class="border-b border-surface-700 pb-2">
+                <div class="font-medium text-xs uppercase tracking-wider text-zinc-400">Zero-Day Attack Injection</div>
+                <div class="text-[11px] text-zinc-500 mt-0.5">Toggle attack classes into stream:</div>
+              </div>
+              <div class="space-y-1.5">
+                <label class="flex items-center justify-between p-2.5 bg-surface-950 border border-surface-800 hover:border-surface-700 rounded cursor-pointer">
+                  <div>
+                    <div class="text-xs font-medium text-zinc-200">Botnet Activity</div>
+                    <div class="text-[11px] font-mono text-zinc-500">Recall P97: 100.0%</div>
+                  </div>
+                  <input type="checkbox" onchange="toggleAttack('Bot', this.checked)" class="accent-sky-500 rounded">
+                </label>
+                <label class="flex items-center justify-between p-2.5 bg-surface-950 border border-surface-800 hover:border-surface-700 rounded cursor-pointer">
+                  <div>
+                    <div class="text-xs font-medium text-zinc-200">SSH / FTP Brute Force</div>
+                    <div class="text-[11px] font-mono text-zinc-500">Recall P97: 87.62% (Stealth)</div>
+                  </div>
+                  <input type="checkbox" onchange="toggleAttack('Brute Force', this.checked)" class="accent-sky-500 rounded">
+                </label>
+                <label class="flex items-center justify-between p-2.5 bg-surface-950 border border-surface-800 hover:border-surface-700 rounded cursor-pointer">
+                  <div>
+                    <div class="text-xs font-medium text-zinc-200">DDoS Volumetric</div>
+                    <div class="text-[11px] font-mono text-zinc-500">Recall P97: 87.96%</div>
+                  </div>
+                  <input type="checkbox" onchange="toggleAttack('DDoS', this.checked)" class="accent-sky-500 rounded">
+                </label>
+                <label class="flex items-center justify-between p-2.5 bg-surface-950 border border-surface-800 hover:border-surface-700 rounded cursor-pointer">
+                  <div>
+                    <div class="text-xs font-medium text-zinc-200">DoS Slowloris / Hulk</div>
+                    <div class="text-[11px] font-mono text-zinc-500">Recall P97: 87.64%</div>
+                  </div>
+                  <input type="checkbox" onchange="toggleAttack('DoS', this.checked)" class="accent-sky-500 rounded">
+                </label>
+                <label class="flex items-center justify-between p-2.5 bg-surface-950 border border-surface-800 hover:border-surface-700 rounded cursor-pointer">
+                  <div>
+                    <div class="text-xs font-medium text-zinc-200">Reconnaissance / Scan</div>
+                    <div class="text-[11px] font-mono text-zinc-500">Recall P97: 89.30%</div>
+                  </div>
+                  <input type="checkbox" onchange="toggleAttack('Reconnaissance', this.checked)" class="accent-sky-500 rounded">
+                </label>
+              </div>
+            </div>
           </div>
 
-          <!-- Right Real-Time Stream Chart & Latest Flow Inspector -->
-          <div class="lg:col-span-8 space-y-6">
-            
-            <!-- Chart Card -->
-            <div class="bg-soc-900 border border-soc-800 rounded-2xl p-6 space-y-4">
-              <div class="flex flex-wrap items-center justify-between gap-2">
+          <!-- Real-Time Chart & Latest Flow Inspector -->
+          <div class="lg:col-span-8 space-y-4">
+            <div class="panel p-4 space-y-3">
+              <div class="flex items-center justify-between">
                 <div>
-                  <h3 class="font-semibold text-white text-sm">Real-Time Anomaly Score Stream (Max-Rank ECDF)</h3>
-                  <p class="text-xs text-slate-400">Memantau skor gabungan <code class="text-cyan-400">max(CDF_SAE, CDF_IF)</code> terhadap ambang batas &tau;</p>
+                  <span class="font-medium text-xs uppercase tracking-wider text-zinc-400">Real-Time Anomaly Score Stream</span>
+                  <div class="text-[11px] text-zinc-500">Dual-Level Max-Rank ECDF trajectory vs cutoff &tau;</div>
                 </div>
-                <div class="flex items-center gap-4 text-xs font-mono">
-                  <span class="flex items-center gap-1.5 text-cyan-400"><span class="w-2.5 h-2.5 rounded-full bg-cyan-400"></span>Max-Rank</span>
-                  <span class="flex items-center gap-1.5 text-amber-400"><span class="w-2.5 h-2.5 rounded-full bg-amber-400"></span>SAE CDF</span>
-                  <span class="flex items-center gap-1.5 text-indigo-400"><span class="w-2.5 h-2.5 rounded-full bg-indigo-400"></span>IF(Z) CDF</span>
+                <div class="flex items-center gap-3 font-mono text-[11px] text-zinc-400">
+                  <span><b class="text-sky-400">—</b> Max-Rank</span>
+                  <span><b class="text-amber-400">--</b> SAE CDF</span>
+                  <span><b class="text-indigo-400">··</b> IF(Z) CDF</span>
+                  <span><b class="text-rose-500">—</b> Cutoff &tau;</span>
                 </div>
               </div>
-
-              <div class="h-80 w-full">
+              <div class="h-72 w-full">
                 <canvas id="liveTrajectoryChart"></canvas>
               </div>
             </div>
-            
-            <!-- Latest Flow Packet Status -->
-            <div class="bg-soc-900 border border-soc-800 rounded-2xl p-6">
-              <div class="flex items-center justify-between mb-4">
-                <span class="text-xs font-semibold uppercase tracking-wider text-slate-400">Insiden Aliran Terakhir (Latest Flow)</span>
-                <span id="latestFlowSourceBadge" class="text-xs font-mono text-slate-400">Source: Calibrated Engine</span>
+
+            <!-- Last Flow Telemetry -->
+            <div class="panel p-4">
+              <div class="flex items-center justify-between mb-2.5">
+                <span class="text-[11px] font-mono uppercase text-zinc-500">Latest Inspected Flow</span>
+                <span id="latestFlowSourceBadge" class="text-[11px] font-mono text-zinc-400">Source: Calibrated Engine</span>
               </div>
-              <div class="grid grid-cols-2 sm:grid-cols-5 gap-4 font-mono text-xs">
-                <div class="p-3.5 rounded-xl bg-soc-950 border border-soc-800">
-                  <span class="text-slate-500 block text-[11px]">Flow ID &amp; Port</span>
-                  <span id="lastFlowId" class="text-white font-semibold mt-1 block">--</span>
+              <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 font-mono text-xs mono-num">
+                <div class="p-2.5 bg-surface-950 border border-surface-800 rounded">
+                  <div class="text-[11px] text-zinc-500">Flow ID / Port</div>
+                  <div id="lastFlowId" class="text-white font-medium mt-0.5">--</div>
                 </div>
-                <div class="p-3.5 rounded-xl bg-soc-950 border border-soc-800">
-                  <span class="text-slate-500 block text-[11px]">Ground Truth</span>
-                  <span id="lastFlowTruth" class="text-emerald-400 font-semibold mt-1 block">Benign</span>
+                <div class="p-2.5 bg-surface-950 border border-surface-800 rounded">
+                  <div class="text-[11px] text-zinc-500">Ground Truth</div>
+                  <div id="lastFlowTruth" class="text-emerald-400 font-medium mt-0.5">Benign</div>
                 </div>
-                <div class="p-3.5 rounded-xl bg-soc-950 border border-soc-800">
-                  <span class="text-slate-500 block text-[11px]">SAE / IF(Z) ECDF</span>
-                  <span id="lastFlowSub" class="text-slate-200 mt-1 block">0.00 / 0.00</span>
+                <div class="p-2.5 bg-surface-950 border border-surface-800 rounded">
+                  <div class="text-[11px] text-zinc-500">SAE / IF(Z) ECDF</div>
+                  <div id="lastFlowSub" class="text-zinc-200 mt-0.5">0.000 / 0.000</div>
                 </div>
-                <div class="p-3.5 rounded-xl bg-soc-950 border border-soc-800">
-                  <span class="text-slate-500 block text-[11px]">Max-Rank Verdict</span>
-                  <span id="lastFlowVerdict" class="text-emerald-400 font-bold mt-1 block">NORMAL</span>
+                <div class="p-2.5 bg-surface-950 border border-surface-800 rounded">
+                  <div class="text-[11px] text-zinc-500">Max-Rank Verdict</div>
+                  <div id="lastFlowVerdict" class="text-emerald-400 font-semibold mt-0.5">NORMAL</div>
                 </div>
-                <!-- BOX BARU: INFERENCE LATENCY -->
-                <div class="p-3.5 rounded-xl bg-soc-950 border border-soc-800">
-                  <span class="text-slate-500 block text-[11px]">Inference Latency</span>
-                  <span id="lastFlowLatency" class="text-cyan-400 font-bold mt-1 block">-- ms</span>
+                <div class="p-2.5 bg-surface-950 border border-surface-800 rounded">
+                  <div class="text-[11px] text-zinc-500">Inference Latency</div>
+                  <div id="lastFlowLatency" class="text-sky-400 font-semibold mt-0.5">-- ms</div>
                 </div>
               </div>
             </div>
-
           </div>
-
         </div>
       </section>
 
-      <!-- ================================================================= -->
-      <!-- MENU 2: MODEL COMPARISON & BENCHMARK                              -->
-      <!-- ================================================================= -->
-      <section id="menu-2" class="menu-section hidden space-y-8">
-        
-        <!-- 3 Architecture Summary Cards -->
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-          <div class="bg-soc-900 border border-soc-800 rounded-2xl p-6 space-y-3">
-            <span class="px-2.5 py-1 text-xs font-mono rounded-lg bg-amber-500/10 text-amber-400 border border-amber-500/20">Baseline 1</span>
-            <h3 class="text-base font-bold text-white">Stacked Autoencoder (SAE)</h3>
-            <p class="text-xs text-slate-400 leading-relaxed">
-              Arsitektur simetris <code class="text-slate-200">39 &rarr; 64 &rarr; 32 &rarr; 16 &rarr; 32 &rarr; 64 &rarr; 39</code>[cite: 1]. Mendeteksi anomali volumetrik dari tingginya <em>Reconstruction Error (MSE)</em>[cite: 1].
+      <!-- =============================================================== -->
+      <!-- MENU 2: MODEL COMPARISON & BENCHMARK                            -->
+      <!-- =============================================================== -->
+      <section id="menu-2" class="menu-section hidden space-y-6">
+        <!-- 3 Architecture Summary Panels -->
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+          <div class="panel p-4 space-y-2">
+            <span class="font-mono text-[11px] px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">Baseline 1</span>
+            <div class="text-sm font-semibold text-white">Stacked Autoencoder (SAE)</div>
+            <p class="text-xs text-zinc-400 leading-relaxed">
+              Arsitektur simetris <code class="text-zinc-200">39 &rarr; 64 &rarr; 32 &rarr; 16 &rarr; 32 &rarr; 64 &rarr; 39</code>. Mendeteksi anomali volumetrik dari tingginya <em>Reconstruction Error (MSE)</em>.
             </p>
           </div>
 
-          <div class="bg-soc-900 border border-soc-800 rounded-2xl p-6 space-y-3">
-            <span class="px-2.5 py-1 text-xs font-mono rounded-lg bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">Baseline 2</span>
-            <h3 class="text-base font-bold text-white">Isolation Forest pada Laten Z</h3>
-            <p class="text-xs text-slate-400 leading-relaxed">
-              Mengisolasi anomali struktural pada ruang representasi laten <code class="text-slate-200">Z &in; R<sup>16</sup></code> tanpa mencampur nilai MSE ke fitur pohon[cite: 1, 7].
+          <div class="panel p-4 space-y-2">
+            <span class="font-mono text-[11px] px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">Baseline 2</span>
+            <div class="text-sm font-semibold text-white">Isolation Forest pada Laten Z</div>
+            <p class="text-xs text-zinc-400 leading-relaxed">
+              Mengisolasi anomali struktural pada ruang representasi laten <code class="text-zinc-200">Z &in; R<sup>16</sup></code> tanpa mencampur nilai MSE ke fitur pohon isolasi.
             </p>
           </div>
 
-          <div class="bg-soc-900 border border-cyan-500/40 rounded-2xl p-6 space-y-3 bg-cyan-950/10">
-            <span class="px-2.5 py-1 text-xs font-mono rounded-lg bg-cyan-500/20 text-cyan-300 border border-cyan-500/30">Proposed Method</span>
-            <h3 class="text-base font-bold text-white">Hybrid Max-Rank ECDF (P97)</h3>
-            <p class="text-xs text-slate-300 leading-relaxed">
-              Menyetarakan skala skor SAE dan IForest dengan distribusi kumulatif empiris (ECDF) lalu mengambil nilai <code class="text-cyan-300">max(CDF_SAE, CDF_IF)</code>[cite: 1, 7].
+          <div class="panel p-4 space-y-2 border-sky-500/40 bg-sky-950/10">
+            <span class="font-mono text-[11px] px-2 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-500/30">Proposed Method</span>
+            <div class="text-sm font-semibold text-white">Hybrid Max-Rank ECDF (P97)</div>
+            <p class="text-xs text-zinc-300 leading-relaxed">
+              Menyetarakan skala SAE dan IForest dengan fungsi distribusi kumulatif empiris (ECDF), lalu menetapkan keputusan via <code class="text-sky-300">max(CDF_SAE, CDF_IF)</code>.
             </p>
           </div>
         </div>
 
         <!-- Master Evaluation Table -->
-        <div class="bg-soc-900 border border-soc-800 rounded-2xl p-6 space-y-4">
-          <div>
-            <h3 class="text-base font-bold text-white">Tabel Evaluasi Komparatif (N = 50.000 Sampel Uji)</h3>
-            <p class="text-xs text-slate-400">Hasil pengujian dari <code class="text-cyan-400">02_hybrid_multi_strategy_training.ipynb</code> (25.000 Normal + 25.000 Serangan Zero-Day)[cite: 1]</p>
+        <div class="panel p-5 space-y-4">
+          <div class="border-b border-surface-700 pb-3">
+            <h2 class="font-semibold text-white">Tabel Evaluasi Komparatif (NF-UQ-NIDS-v2, N = 50.000 Sampel Uji)</h2>
+            <p class="text-xs text-zinc-400 mt-0.5">Balanced Zero-Day Test Split: 25.000 Benign Test vs 25.000 Unseen Attacks (5 Kelas Serangan)</p>
           </div>
-
           <div class="overflow-x-auto">
-            <table class="w-full text-left border-collapse font-mono text-xs">
+            <table class="w-full text-left border-collapse font-mono text-xs mono-num">
               <thead>
-                <tr class="border-b border-soc-800 text-slate-400 bg-soc-950/60">
-                  <th class="p-3.5 font-sans font-semibold">Konfigurasi Model</th>
-                  <th class="p-3.5">Threshold (&tau;)</th>
-                  <th class="p-3.5 text-right">TP</th>
-                  <th class="p-3.5 text-right">FP</th>
-                  <th class="p-3.5 text-right text-emerald-400">FPR (%)</th>
-                  <th class="p-3.5 text-right text-cyan-400">Recall (%)</th>
-                  <th class="p-3.5 text-right">Precision (%)</th>
-                  <th class="p-3.5 text-right">F1-Score</th>
-                  <th class="p-3.5 text-right">ROC-AUC</th>
+                <tr class="border-b border-surface-700 text-zinc-400 bg-surface-950">
+                  <th class="p-3 font-sans font-medium">Konfigurasi Model</th>
+                  <th class="p-3">Cutoff (&tau;)</th>
+                  <th class="p-3 text-right">TP</th>
+                  <th class="p-3 text-right">FP</th>
+                  <th class="p-3 text-right text-emerald-400">FPR (%)</th>
+                  <th class="p-3 text-right text-sky-400">Recall (%)</th>
+                  <th class="p-3 text-right">Precision (%)</th>
+                  <th class="p-3 text-right">F1-Score</th>
+                  <th class="p-3 text-right">ROC-AUC</th>
                 </tr>
               </thead>
-              <tbody class="divide-y divide-soc-800 text-slate-300">
+              <tbody class="divide-y divide-surface-800 text-zinc-300">
                 <tr>
-                  <td class="p-3.5 font-sans font-medium text-amber-300">Baseline 1: SAE Alone (MSE P95)</td>
-                  <td class="p-3.5">0.0006</td>
-                  <td class="p-3.5 text-right">16,682</td>
-                  <td class="p-3.5 text-right">1,099</td>
-                  <td class="p-3.5 text-right">4.40%</td>
-                  <td class="p-3.5 text-right">66.73%</td>
-                  <td class="p-3.5 text-right">93.82%</td>
-                  <td class="p-3.5 text-right">0.7799</td>
-                  <td class="p-3.5 text-right">0.8813</td>
+                  <td class="p-3 font-sans text-amber-400 font-medium">Baseline 1: SAE Alone (MSE P95)</td>
+                  <td class="p-3">0.0006</td>
+                  <td class="p-3 text-right">16,682</td>
+                  <td class="p-3 text-right">1,099</td>
+                  <td class="p-3 text-right text-emerald-400">4.40%</td>
+                  <td class="p-3 text-right text-sky-400">66.73%</td>
+                  <td class="p-3 text-right">93.82%</td>
+                  <td class="p-3 text-right">0.7799</td>
+                  <td class="p-3 text-right">0.8813</td>
                 </tr>
                 <tr>
-                  <td class="p-3.5 font-sans font-medium text-indigo-300">Baseline 2: IForest Alone (Cascaded)</td>
-                  <td class="p-3.5">0.4754</td>
-                  <td class="p-3.5 text-right">17,351</td>
-                  <td class="p-3.5 text-right">1,302</td>
-                  <td class="p-3.5 text-right">5.21%</td>
-                  <td class="p-3.5 text-right">69.40%</td>
-                  <td class="p-3.5 text-right">93.02%</td>
-                  <td class="p-3.5 text-right">0.7950</td>
-                  <td class="p-3.5 text-right">0.8672</td>
+                  <td class="p-3 font-sans text-indigo-400 font-medium">Baseline 2: IForest Alone (Cascaded)</td>
+                  <td class="p-3">0.4754</td>
+                  <td class="p-3 text-right">17,351</td>
+                  <td class="p-3 text-right">1,302</td>
+                  <td class="p-3 text-right text-emerald-400">5.21%</td>
+                  <td class="p-3 text-right text-sky-400">69.40%</td>
+                  <td class="p-3 text-right">93.02%</td>
+                  <td class="p-3 text-right">0.7950</td>
+                  <td class="p-3 text-right">0.8672</td>
                 </tr>
                 <tr>
-                  <td class="p-3.5 font-sans font-medium text-cyan-300">Proposed: Max-Rank ECDF (P95)</td>
-                  <td class="p-3.5">0.9708</td>
-                  <td class="p-3.5 text-right">23,311</td>
-                  <td class="p-3.5 text-right">1,232</td>
-                  <td class="p-3.5 text-right text-amber-400">4.93%</td>
-                  <td class="p-3.5 text-right text-cyan-400 font-bold">93.24%</td>
-                  <td class="p-3.5 text-right">94.98%</td>
-                  <td class="p-3.5 text-right font-bold">0.9410</td>
-                  <td class="p-3.5 text-right text-cyan-400 font-bold">0.9834</td>
+                  <td class="p-3 font-sans text-sky-300 font-medium">Proposed: Max-Rank ECDF (P95)</td>
+                  <td class="p-3">0.9708</td>
+                  <td class="p-3 text-right">23,311</td>
+                  <td class="p-3 text-right">1,232</td>
+                  <td class="p-3 text-right text-amber-400">4.93%</td>
+                  <td class="p-3 text-right text-sky-400 font-semibold">93.24%</td>
+                  <td class="p-3 text-right">94.98%</td>
+                  <td class="p-3 text-right font-semibold">0.9410</td>
+                  <td class="p-3 text-right font-semibold">0.9834</td>
                 </tr>
-                <tr class="bg-cyan-500/10 border-l-4 border-cyan-400">
-                  <td class="p-3.5 font-sans font-bold text-white">Proposed Final: Max-Rank ECDF (P97)</td>
-                  <td class="p-3.5 text-amber-300 font-bold">0.9832</td>
-                  <td class="p-3.5 text-right font-bold">22,626</td>
-                  <td class="p-3.5 text-right font-bold text-emerald-300">732</td>
-                  <td class="p-3.5 text-right text-emerald-400 font-bold">2.93%</td>
-                  <td class="p-3.5 text-right text-cyan-300 font-bold">90.50%</td>
-                  <td class="p-3.5 text-right font-bold">96.87%</td>
-                  <td class="p-3.5 text-right font-bold text-white">0.9358</td>
-                  <td class="p-3.5 text-right text-cyan-300 font-bold">0.9834</td>
+                <tr class="bg-sky-500/10 font-semibold text-white">
+                  <td class="p-3 font-sans">Proposed Final: Max-Rank ECDF (P97)</td>
+                  <td class="p-3 text-amber-400">0.9832</td>
+                  <td class="p-3 text-right">22,626</td>
+                  <td class="p-3 text-right text-emerald-400">732</td>
+                  <td class="p-3 text-right text-emerald-400">2.93%</td>
+                  <td class="p-3 text-right text-sky-400">90.50%</td>
+                  <td class="p-3 text-right">96.87%</td>
+                  <td class="p-3 text-right">0.9358</td>
+                  <td class="p-3 text-right">0.9834</td>
                 </tr>
               </tbody>
             </table>
           </div>
         </div>
 
-        <!-- Charts Row: ROC & Per-Class Recall -->
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-          <div class="bg-soc-900 border border-soc-800 rounded-2xl p-6 space-y-4">
-            <h3 class="text-sm font-bold text-white">Kurva ROC Komparatif</h3>
-            <div class="h-64">
-              <canvas id="rocComparisonChart"></canvas>
-            </div>
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+          <div class="panel p-4 space-y-3">
+            <div class="text-xs font-medium uppercase tracking-wider text-zinc-400">Kurva ROC Komparatif</div>
+            <div class="h-64"><canvas id="rocComparisonChart"></canvas></div>
           </div>
-
-          <div class="bg-soc-900 border border-soc-800 rounded-2xl p-6 space-y-4">
-            <h3 class="text-sm font-bold text-white">Recall Per Kelas Serangan pada P97 (&tau; = 0.9832)</h3>
-            <div class="h-64">
-              <canvas id="classRecallChart"></canvas>
-            </div>
+          <div class="panel p-4 space-y-3">
+            <div class="text-xs font-medium uppercase tracking-wider text-zinc-400">Recall Per Kelas Serangan pada P97 (&tau; = 0.9832)</div>
+            <div class="h-64"><canvas id="classRecallChart"></canvas></div>
           </div>
         </div>
-
       </section>
 
-      <!-- ================================================================= -->
-      <!-- MENU 3: THRESHOLD & SENSITIVITY LAB                               -->
-      <!-- ================================================================= -->
-      <section id="menu-3" class="menu-section hidden space-y-8">
-        
-        <div class="bg-soc-900 border border-soc-800 rounded-2xl p-6 space-y-6">
-          <div class="flex flex-wrap items-center justify-between gap-4">
+      <!-- =============================================================== -->
+      <!-- MENU 3: THRESHOLD & SENSITIVITY LAB                             -->
+      <!-- =============================================================== -->
+      <section id="menu-3" class="menu-section hidden space-y-6">
+        <div class="panel p-5 space-y-5">
+          <div class="flex flex-wrap items-center justify-between gap-4 border-b border-surface-700 pb-3">
             <div>
-              <h3 class="text-base font-bold text-white">Eksperimen Sensitivitas Ambang Batas (&tau;)</h3>
-              <p class="text-xs text-slate-400">Geser persentil kalibrasi (80.0% – 99.0%) untuk melihat <em>trade-off</em> akurat antara False Positive Rate (FPR) dan Recall.</p>
+              <h2 class="font-semibold text-white">Empirical Percentile Threshold Tuner</h2>
+              <p class="text-xs text-zinc-400 mt-0.5">Geser persentil kalibrasi (80.0% – 99.0%) untuk menganalisis trade-off FPR versus Recall.</p>
             </div>
-            
-            <!-- Preset Buttons Termasuk P94 (EER/Optimum F1) -->
-            <div class="flex flex-wrap gap-2">
-              <button onclick="setLabPercentile(94.0)" class="px-3.5 py-2 rounded-xl bg-cyan-500/20 hover:bg-cyan-500/30 text-xs font-mono font-bold text-cyan-300 border border-cyan-500/40 transition">
-                Set P94 EER (0.9648)
-              </button>
-              <button onclick="setLabPercentile(95.0)" class="px-3.5 py-2 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 text-xs font-mono text-amber-300 border border-amber-500/30 transition">
-                Set P95 (0.9708)
-              </button>
-              <button onclick="setLabPercentile(97.0)" class="px-3.5 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-soc-950 font-mono font-bold text-xs transition">
-                Set P97 Optimal (0.9832)
-              </button>
-              <button onclick="setLabPercentile(99.0)" class="px-3.5 py-2 rounded-xl bg-soc-800 hover:bg-soc-700 text-xs font-mono text-slate-300 border border-soc-700 transition">
-                Set P99 (0.9948)
-              </button>
+            <div class="flex flex-wrap gap-2 font-mono text-xs">
+              <button onclick="setLabPercentile(94.0)" class="px-3 py-1.5 bg-surface-800 hover:bg-surface-700 border border-surface-700 rounded text-sky-400 font-medium">Set P94 EER (0.9648)</button>
+              <button onclick="setLabPercentile(95.0)" class="px-3 py-1.5 bg-surface-800 hover:bg-surface-700 border border-surface-700 rounded text-amber-400">Set P95 (0.9708)</button>
+              <button onclick="setLabPercentile(97.0)" class="px-3 py-1.5 bg-sky-600 hover:bg-sky-500 text-white font-medium rounded">Set P97 Optimal (0.9832)</button>
+              <button onclick="setLabPercentile(99.0)" class="px-3 py-1.5 bg-surface-800 hover:bg-surface-700 border border-surface-700 rounded text-zinc-300">Set P99 (0.9948)</button>
             </div>
           </div>
 
-          <!-- Slider Box -->
-          <div class="p-6 rounded-2xl bg-soc-950 border border-soc-800 space-y-4">
-            <div class="flex justify-between items-center font-mono">
-              <span class="text-xs text-slate-400">Persentil Kalibrasi Normal: <strong id="labPercentileVal" class="text-cyan-400 text-base">97.0%</strong></span>
-              <span class="text-xs text-slate-400">Nilai Cutoff &tau;: <strong id="labTauVal" class="text-amber-400 text-base">0.9832</strong></span>
+          <div class="p-4 bg-surface-950 border border-surface-800 rounded space-y-3">
+            <div class="flex justify-between font-mono text-xs">
+              <span>Persentil Kalibrasi Normal: <b id="labPercentileVal" class="text-sky-400">97.0%</b></span>
+              <span>Numerical Cutoff (&tau;): <b id="labTauVal" class="text-amber-400">0.9832</b></span>
             </div>
-            <input type="range" id="labSlider" min="80.0" max="99.0" step="0.5" value="97.0" oninput="updateLabMetrics(this.value)" class="w-full accent-cyan-400 cursor-pointer">
-            <p id="labTradeoffNote" class="text-xs text-emerald-400 leading-relaxed">
-              <span class="text-emerald-400 font-semibold">✓ Usulan Skripsi (P97):</span> FPR ditekan di bawah 3.00% (2.93%, FP: 732) dengan Recall tetap tinggi di atas 90.50% (TP: 22.626).
-            </p>
+            <input id="labSlider" type="range" min="80.0" max="99.0" step="0.5" value="97.0" oninput="updateLabMetrics(this.value)" class="w-full accent-sky-500 cursor-pointer">
+            <div id="labTradeoffNote" class="text-xs text-emerald-400 font-mono leading-relaxed pt-1">
+              ✓ Usulan Skripsi (P97): FPR ditekan di bawah 3.00% (2.93%, FP: 732) dengan Recall tetap tinggi di atas 90.50% (TP: 22.626).
+            </div>
           </div>
 
-          <!-- Confusion Matrix & Metrics -->
-          <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <div class="space-y-3">
-              <h4 class="text-xs font-semibold uppercase tracking-wider text-slate-400">Confusion Matrix (Skala Uji N = 50.000)</h4>
-              <div class="grid grid-cols-2 gap-4 font-mono">
-                <div class="p-5 rounded-2xl bg-cyan-500/10 border border-cyan-500/30">
-                  <span class="text-xs text-cyan-300 block">True Positive (TP)</span>
-                  <span id="labTp" class="text-2xl font-bold text-white mt-1 block">22,626</span>
-                </div>
-                <div class="p-5 rounded-2xl bg-amber-500/10 border border-amber-500/30">
-                  <span class="text-xs text-amber-300 block">False Positive (FP)</span>
-                  <span id="labFp" class="text-2xl font-bold text-amber-300 mt-1 block">732</span>
-                </div>
-                <div class="p-5 rounded-2xl bg-rose-500/10 border border-rose-500/30">
-                  <span class="text-xs text-rose-300 block">False Negative (FN)</span>
-                  <span id="labFn" class="text-2xl font-bold text-rose-300 mt-1 block">2,374</span>
-                </div>
-                <div class="p-5 rounded-2xl bg-emerald-500/10 border border-emerald-500/30">
-                  <span class="text-xs text-emerald-300 block">True Negative (TN)</span>
-                  <span id="labTn" class="text-2xl font-bold text-white mt-1 block">24,268</span>
-                </div>
-              </div>
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 font-mono mono-num">
+            <div class="p-3.5 bg-surface-950 border border-surface-800 rounded">
+              <div class="text-xs text-zinc-500">True Positive (TP)</div>
+              <div id="labTp" class="text-xl font-semibold text-white mt-1">22,626</div>
             </div>
-
-            <div class="space-y-3 flex flex-col justify-between">
-              <div class="space-y-3">
-                <h4 class="text-xs font-semibold uppercase tracking-wider text-slate-400">Metrik Performa Terhitung</h4>
-                <div class="grid grid-cols-2 gap-4 font-mono">
-                  <div class="p-4 rounded-xl bg-soc-950 border border-soc-800">
-                    <span class="text-xs text-slate-500 block">False Positive Rate</span>
-                    <span id="labFpr" class="text-xl font-bold text-emerald-400 mt-1 block">2.93%</span>
-                  </div>
-                  <div class="p-4 rounded-xl bg-soc-950 border border-soc-800">
-                    <span class="text-xs text-slate-500 block">Recall (TPR)</span>
-                    <span id="labRecall" class="text-xl font-bold text-cyan-400 mt-1 block">90.50%</span>
-                  </div>
-                  <div class="p-4 rounded-xl bg-soc-950 border border-soc-800">
-                    <span class="text-xs text-slate-500 block">Precision</span>
-                    <span id="labPrecision" class="text-xl font-bold text-white mt-1 block">96.87%</span>
-                  </div>
-                  <div class="p-4 rounded-xl bg-soc-950 border border-soc-800">
-                    <span class="text-xs text-slate-500 block">F1-Score</span>
-                    <span id="labF1" class="text-xl font-bold text-white mt-1 block">0.9358</span>
-                  </div>
-                </div>
-              </div>
-
-              <button onclick="saveExperimentBookmark()" class="w-full py-3 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-soc-950 font-semibold text-xs transition">
-                Simpan Konfigurasi ke Riwayat Eksperimen (Menu 6)
-              </button>
+            <div class="p-3.5 bg-surface-950 border border-surface-800 rounded">
+              <div class="text-xs text-zinc-500">False Positive (FP)</div>
+              <div id="labFp" class="text-xl font-semibold text-amber-400 mt-1">732</div>
             </div>
+            <div class="p-3.5 bg-surface-950 border border-surface-800 rounded">
+              <div class="text-xs text-zinc-500">False Negative (FN)</div>
+              <div id="labFn" class="text-xl font-semibold text-rose-400 mt-1">2,374</div>
+            </div>
+            <div class="p-3.5 bg-surface-950 border border-surface-800 rounded">
+              <div class="text-xs text-zinc-500">True Negative (TN)</div>
+              <div id="labTn" class="text-xl font-semibold text-emerald-400 mt-1">24,268</div>
+            </div>
+          </div>
+
+          <div class="flex flex-wrap items-center justify-between gap-4 pt-2">
+            <div class="font-mono text-xs text-zinc-400">
+              Computed Metrics — FPR: <b id="labFpr" class="text-emerald-400">2.93%</b> | Recall: <b id="labRecall" class="text-sky-400">90.50%</b> | Precision: <b id="labPrecision" class="text-white">96.87%</b> | F1: <b id="labF1" class="text-white">0.9358</b>
+            </div>
+            <button onclick="saveExperimentBookmark()" class="px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white text-xs font-medium rounded transition">
+              Simpan Konfigurasi ke Log (Menu 6)
+            </button>
           </div>
         </div>
-
       </section>
 
-      <!-- ================================================================= -->
-      <!-- MENU 4: ANOMALY EXPLORER & FORENSICS                              -->
-      <!-- ================================================================= -->
-      <section id="menu-4" class="menu-section hidden space-y-6">
-        
-        <div class="bg-soc-900 border border-soc-800 rounded-2xl p-6 space-y-5">
-          <div class="flex flex-wrap items-center justify-between gap-4">
+      <!-- =============================================================== -->
+      <!-- MENU 4: ANOMALY EXPLORER & FORENSICS                            -->
+      <!-- =============================================================== -->
+      <section id="menu-4" class="menu-section hidden space-y-4">
+        <div class="panel p-5 space-y-4">
+          <div class="flex items-center justify-between">
             <div>
-              <h3 class="text-base font-bold text-white">Log Deteksi Aliran &amp; Penjelasan Forensik</h3>
-              <p class="text-xs text-slate-400">Klik tombol <strong>Detail</strong> pada baris mana pun untuk memeriksa pembuktian skor SAE dan IForest.</p>
+              <h2 class="font-semibold text-white">Flow Inspection Log</h2>
+              <p class="text-xs text-zinc-400 mt-0.5">Klik tombol <strong>Detail</strong> pada baris mana pun untuk memeriksa pembuktian skor dan XAI.</p>
             </div>
-
-            <div class="flex flex-wrap items-center gap-3">
-              <select id="filterVerdict" onchange="renderLogTable()" class="bg-soc-950 border border-soc-700 rounded-xl px-3 py-2 text-xs text-slate-200">
-                <option value="all">Semua Keputusan</option>
+            <div class="flex gap-2">
+              <select id="filterVerdict" onchange="renderLogTable()" class="bg-surface-950 border border-surface-700 rounded px-2.5 py-1.5 text-xs text-zinc-200">
+                <option value="all">Semua Aliran</option>
                 <option value="ANOMALY">Anomali Saja</option>
                 <option value="NORMAL">Normal Saja</option>
               </select>
-              <button onclick="exportLogsCSV()" class="px-4 py-2 rounded-xl bg-soc-800 hover:bg-soc-700 border border-soc-700 text-xs font-medium text-cyan-400">
+              <button onclick="exportLogsCSV()" class="px-3 py-1.5 bg-surface-800 hover:bg-surface-700 border border-surface-700 rounded text-xs font-mono text-zinc-200">
                 Export CSV
               </button>
             </div>
           </div>
 
-          <div class="overflow-x-auto border border-soc-800 rounded-xl">
-            <table class="w-full text-left border-collapse font-mono text-xs">
+          <div class="overflow-x-auto border border-surface-800 rounded">
+            <table class="w-full text-left border-collapse font-mono text-xs mono-num">
               <thead>
-                <tr class="bg-soc-950 text-slate-400 border-b border-soc-800">
-                  <th class="p-3.5">Waktu</th>
-                  <th class="p-3.5">Flow ID</th>
-                  <th class="p-3.5">Ground Truth</th>
-                  <th class="p-3.5">SAE CDF</th>
-                  <th class="p-3.5">IF(Z) CDF</th>
-                  <th class="p-3.5 text-cyan-400">Max-Rank</th>
-                  <th class="p-3.5">Prediksi</th>
-                  <th class="p-3.5">Evaluasi</th>
-                  <th class="p-3.5 text-right">Forensik</th>
+                <tr class="bg-surface-950 text-zinc-400 border-b border-surface-800">
+                  <th class="p-3">Waktu</th>
+                  <th class="p-3">Flow ID</th>
+                  <th class="p-3">Ground Truth</th>
+                  <th class="p-3">SAE CDF</th>
+                  <th class="p-3">IF(Z) CDF</th>
+                  <th class="p-3 text-sky-400">Max-Rank</th>
+                  <th class="p-3">Prediksi</th>
+                  <th class="p-3">Eval</th>
+                  <th class="p-3 text-right">Aksi</th>
                 </tr>
               </thead>
-              <tbody id="logTableBody" class="divide-y divide-soc-800 text-slate-300">
-                <!-- Populated by JS -->
-              </tbody>
+              <tbody id="logTableBody" class="divide-y divide-surface-800"></tbody>
             </table>
           </div>
         </div>
-
       </section>
 
-      <!-- ================================================================= -->
-      <!-- MENU 5: CSV BATCH ANALYSIS                                        -->
-      <!-- ================================================================= -->
-      <section id="menu-5" class="menu-section hidden space-y-6">
-        
-        <div class="bg-soc-900 border border-soc-800 rounded-2xl p-6 space-y-6">
+      <!-- =============================================================== -->
+      <!-- MENU 5: CSV BATCH ANALYSIS                                      -->
+      <!-- =============================================================== -->
+      <section id="menu-5" class="menu-section hidden space-y-4">
+        <div class="panel p-5 space-y-4">
           <div>
-            <h3 class="text-base font-bold text-white">Unggah &amp; Evaluasi Batch CSV (NF-UQ-NIDS-v2)</h3>
-            <p class="text-xs text-slate-400 mt-1">
-              Unggah file CSV fitur NetFlow. Jika backend <code class="text-cyan-400">web/app.py</code> aktif, file akan diproses langsung oleh model PyTorch SAE &amp; Joblib IForest.
-            </p>
+            <h2 class="font-semibold text-white">Batch CSV Ingestion (NF-UQ-NIDS-v2, 39 Fitur Bersih)</h2>
+            <p class="text-xs text-zinc-400 mt-0.5">Unggah berkas CSV fitur NetFlow untuk diproses langsung via PyTorch SAE &amp; Joblib IForest.</p>
           </div>
-
-          <div class="border-2 border-dashed border-soc-700 hover:border-cyan-400 rounded-2xl p-8 text-center bg-soc-950/50 cursor-pointer transition" onclick="document.getElementById('csvInput').click()">
+          <div onclick="document.getElementById('csvInput').click()" class="border border-dashed border-surface-700 hover:border-sky-500 rounded p-8 text-center bg-surface-950 cursor-pointer transition">
             <input type="file" id="csvInput" accept=".csv" class="hidden" onchange="handleCSVFile(event)">
-            <p class="text-sm font-semibold text-white">Klik untuk memilih file CSV atau muat sampel di bawah</p>
-            <p class="text-xs text-slate-400 mt-1">Kompatibel dengan 39 fitur numerik bersih sesuai <code class="text-cyan-400">partition_metadata.json</code>[cite: 1]</p>
+            <div class="text-xs font-medium text-zinc-200">Klik untuk memilih berkas CSV</div>
+            <div class="text-[11px] text-zinc-500 mt-1 font-mono">Kompatibel dengan skema 39 fitur NF-UQ-NIDS-v2</div>
           </div>
-
-          <div class="flex items-center justify-between bg-soc-950 p-4 rounded-xl border border-soc-800 text-xs">
-            <span class="text-slate-400">Uji coba cepat dengan sampel data NF-UQ-NIDS-v2:</span>
-            <button onclick="loadSampleCSVBatch()" class="px-4 py-2 rounded-lg bg-cyan-500/10 text-cyan-400 hover:bg-cyan-500/20 border border-cyan-500/20 font-medium">
-              Muat 10 Sampel Uji NF-UQ-NIDS-v2
+          <div class="flex items-center justify-between pt-2">
+            <span class="text-xs text-zinc-400">Uji coba cepat dengan flow sintetis NF-UQ-NIDS-v2:</span>
+            <button onclick="loadSampleCSVBatch()" class="px-3 py-1.5 bg-surface-800 hover:bg-surface-700 border border-surface-700 rounded text-xs text-zinc-200">
+              Jalankan 10 Sampel Batch
             </button>
           </div>
-
-          <div id="csvResultBox" class="hidden space-y-4 pt-4 border-t border-soc-800">
-            <div class="grid grid-cols-3 gap-4 font-mono text-xs">
-              <div class="p-4 rounded-xl bg-soc-950 border border-soc-800">
-                <span class="text-slate-500 block">Nama File</span>
-                <span id="csvName" class="text-white font-bold mt-1 block">--</span>
-              </div>
-              <div class="p-4 rounded-xl bg-soc-950 border border-soc-800">
-                <span class="text-slate-500 block">Jumlah Baris</span>
-                <span id="csvRows" class="text-cyan-400 font-bold mt-1 block">0</span>
-              </div>
-              <div class="p-4 rounded-xl bg-soc-950 border border-soc-800">
-                <span class="text-slate-500 block">Anomali Terdeteksi</span>
-                <span id="csvAnomalies" class="text-rose-400 font-bold mt-1 block">0</span>
-              </div>
-            </div>
+          <div id="csvResultBox" class="hidden grid grid-cols-3 gap-4 pt-3 border-t border-surface-800 font-mono text-xs">
+            <div class="p-3 bg-surface-950 rounded border border-surface-800">Nama File: <b id="csvName" class="text-white">--</b></div>
+            <div class="p-3 bg-surface-950 rounded border border-surface-800">Jumlah Baris: <b id="csvRows" class="text-sky-400">0</b></div>
+            <div class="p-3 bg-surface-950 rounded border border-surface-800">Flagged Anomalies: <b id="csvAnomalies" class="text-rose-400">0</b></div>
           </div>
         </div>
-
       </section>
 
-      <!-- ================================================================= -->
-      <!-- MENU 6: EXPERIMENT HISTORY & ARTIFACT CONNECTION                  -->
-      <!-- ================================================================= -->
-      <section id="menu-6" class="menu-section hidden space-y-8">
-        
-        <!-- Saved Experiment Runs -->
-        <div class="bg-soc-900 border border-soc-800 rounded-2xl p-6 space-y-4">
-          <div class="flex items-center justify-between">
+      <!-- =============================================================== -->
+      <!-- MENU 6: EXPERIMENT HISTORY & ARTIFACT CONNECTION                -->
+      <!-- =============================================================== -->
+      <section id="menu-6" class="menu-section hidden space-y-6">
+        <div class="panel p-5 space-y-4">
+          <div class="flex items-center justify-between border-b border-surface-700 pb-3">
             <div>
-              <h3 class="text-base font-bold text-white">Riwayat Eksperimen Threshold</h3>
-              <p class="text-xs text-slate-400">Daftar konfigurasi ambang batas yang disimpan selama sesi pengujian.</p>
+              <h2 class="font-semibold text-white">Riwayat Eksperimen Threshold</h2>
+              <p class="text-xs text-zinc-400 mt-0.5">Konfigurasi cut-off tersimpan sepanjang sesi penelitian.</p>
             </div>
-            <button onclick="startReplayScenario()" class="px-4 py-2 rounded-xl bg-cyan-500 hover:bg-cyan-400 text-soc-950 font-semibold text-xs transition">
-              Jalankan Replay Skenario Serangan
+            <button onclick="startReplayScenario()" class="px-3 py-1.5 bg-sky-600 hover:bg-sky-500 text-white rounded text-xs font-medium transition">
+              Replay Skenario Serangan
             </button>
           </div>
-
-          <div class="overflow-x-auto border border-soc-800 rounded-xl">
-            <table class="w-full text-left border-collapse font-mono text-xs">
+          <div class="overflow-x-auto border border-surface-800 rounded">
+            <table class="w-full text-left border-collapse font-mono text-xs mono-num">
               <thead>
-                <tr class="bg-soc-950 text-slate-400 border-b border-soc-800">
-                  <th class="p-3.5">Run ID</th>
-                  <th class="p-3.5">Model</th>
-                  <th class="p-3.5">Persentil</th>
-                  <th class="p-3.5">&tau; Cutoff</th>
-                  <th class="p-3.5 text-emerald-400">FPR</th>
-                  <th class="p-3.5 text-cyan-400">Recall</th>
-                  <th class="p-3.5">F1-Score</th>
+                <tr class="bg-surface-950 text-zinc-400 border-b border-surface-800">
+                  <th class="p-3">Run ID</th>
+                  <th class="p-3">Model</th>
+                  <th class="p-3">Persentil</th>
+                  <th class="p-3 text-amber-400">&tau; Cutoff</th>
+                  <th class="p-3 text-emerald-400">FPR</th>
+                  <th class="p-3 text-sky-400">Recall</th>
+                  <th class="p-3">F1-Score</th>
                 </tr>
               </thead>
-              <tbody id="experimentTableBody" class="divide-y divide-soc-800 text-slate-300">
-                <!-- Populated by JS -->
-              </tbody>
+              <tbody id="experimentTableBody" class="divide-y divide-surface-800"></tbody>
             </table>
           </div>
         </div>
 
-        <!-- Folder Structure Mapping Reference -->
-        <div class="bg-soc-900 border border-soc-800 rounded-2xl p-6 space-y-4">
-          <h3 class="text-base font-bold text-white">Integrasi Struktur Direktori Proyek (`notebooks/artifacts/`)</h3>
-          <p class="text-xs text-slate-400">
-            Server <code class="text-cyan-400">web/app.py</code> secara otomatis membaca file artefak berikut dari repositori Anda[cite: 7]:
+        <div class="panel p-5 space-y-3">
+          <h2 class="font-semibold text-white">Integrasi Struktur Direktori Proyek (`notebooks/artifacts/`)</h2>
+          <p class="text-xs text-zinc-400">
+            Server <code class="text-sky-400">web/app.py</code> memuat artefak model dan partisi dataset NetFlow berikut:
           </p>
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-4 font-mono text-xs">
-            <div class="p-4 rounded-xl bg-soc-950 border border-soc-800 space-y-1.5">
-              <div class="text-cyan-400 font-bold">1. Model &amp; Scaler Artifacts</div>
-              <div class="text-slate-300">• notebooks/artifacts/sae_autoencoder_final.pth[cite: 7]</div>
-              <div class="text-slate-300">• notebooks/artifacts/iforest_latent_final.joblib[cite: 7]</div>
-              <div class="text-slate-300">• notebooks/artifacts/minmax_params.json[cite: 7]</div>
-              <div class="text-slate-300">• notebooks/artifacts/hybrid_pipeline_config.json[cite: 7]</div>
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3 font-mono text-xs">
+            <div class="p-3 bg-surface-950 border border-surface-800 rounded space-y-1">
+              <div class="text-sky-400 font-semibold">1. Model &amp; Scaler Artifacts</div>
+              <div class="text-zinc-300">• notebooks/artifacts/sae_autoencoder_final.pth</div>
+              <div class="text-zinc-300">• notebooks/artifacts/iforest_latent_final.joblib</div>
+              <div class="text-zinc-300">• notebooks/artifacts/minmax_params.json</div>
+              <div class="text-zinc-300">• notebooks/artifacts/hybrid_pipeline_config.json</div>
             </div>
-            <div class="p-4 rounded-xl bg-soc-950 border border-soc-800 space-y-1.5">
-              <div class="text-emerald-400 font-bold">2. ECDF Reference &amp; Partitions</div>
-              <div class="text-slate-300">• notebooks/artifacts/sae_calib_norm_ref.npy[cite: 7]</div>
-              <div class="text-slate-300">• notebooks/artifacts/ifz_calib_norm_ref.npy[cite: 7]</div>
-              <div class="text-slate-300">• dataset/processed/benign_test_parts/*.parquet[cite: 7]</div>
-              <div class="text-slate-300">• dataset/processed/unseen_attack_test_parts/*[cite: 7]</div>
+            <div class="p-3 bg-surface-950 border border-surface-800 rounded space-y-1">
+              <div class="text-emerald-400 font-semibold">2. ECDF Reference &amp; Partitions</div>
+              <div class="text-zinc-300">• notebooks/artifacts/sae_calib_norm_ref.npy</div>
+              <div class="text-zinc-300">• notebooks/artifacts/ifz_calib_norm_ref.npy</div>
+              <div class="text-zinc-300">• dataset/processed/benign_test_parts/*.parquet</div>
+              <div class="text-zinc-300">• dataset/processed/unseen_attack_test_parts/*</div>
             </div>
           </div>
         </div>
-
       </section>
 
     </main>
   </div>
 
-  <!-- ===================================================================== -->
-  <!-- MODAL: FORENSIC FLOW EXPLAINER                                        -->
-  <!-- ===================================================================== -->
-  <div id="forensicModal" class="fixed inset-0 bg-black/75 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
-    <div class="bg-soc-900 border border-soc-700 rounded-2xl max-w-2xl w-full p-6 space-y-5 shadow-2xl">
-      <div class="flex items-center justify-between border-b border-soc-800 pb-4">
-        <div>
-          <h3 class="text-base font-bold text-white">Forensic Flow Inspection: <span id="modalFlowId" class="text-cyan-400 font-mono"></span></h3>
-          <p class="text-xs text-slate-400">Penjelasan keputusan berbasis komponen skor Dual-Level Max-Rank</p>
-        </div>
-        <button onclick="closeForensicModal()" class="text-slate-400 hover:text-white text-sm font-bold px-2">✕</button>
-      </div>
-
-      <div class="grid grid-cols-3 gap-4 font-mono text-xs">
-        <div class="p-3.5 rounded-xl bg-soc-950 border border-soc-800">
-          <span class="text-slate-500 block">Ground Truth</span>
-          <span id="modalTruth" class="text-sm font-bold mt-1 block"></span>
-        </div>
-        <div class="p-3.5 rounded-xl bg-soc-950 border border-soc-800">
-          <span class="text-slate-500 block">Max-Rank Score</span>
-          <span id="modalMaxRank" class="text-sm font-bold text-cyan-400 mt-1 block"></span>
-        </div>
-        <div class="p-3.5 rounded-xl bg-soc-950 border border-soc-800">
-          <span class="text-slate-500 block">Selisih terhadap &tau;</span>
-          <span id="modalMargin" class="text-sm font-bold mt-1 block"></span>
-        </div>
-      </div>
-
-      <div class="grid grid-cols-2 gap-4 font-mono text-xs">
-        <div class="p-4 rounded-xl bg-soc-950 border border-soc-800 space-y-1">
-          <span class="text-amber-400 font-semibold block">Level 1: SAE Reconstruction</span>
-          <div>MSE Raw: <span id="modalSaeRaw" class="text-white"></span></div>
-          <div>ECDF Rank: <span id="modalSaeCdf" class="text-amber-300 font-bold"></span></div>
-        </div>
-        <div class="p-4 rounded-xl bg-soc-950 border border-soc-800 space-y-1">
-          <span class="text-indigo-400 font-semibold block">Level 2: IForest Latent Z (16-D)</span>
-          <div>Isolation Raw: <span id="modalIfRaw" class="text-white"></span></div>
-          <div>ECDF Rank: <span id="modalIfCdf" class="text-indigo-300 font-bold"></span></div>
-        </div>
+  <!-- FORENSIC MODAL DENGAN XAI TOP-3 FEATURES -->
+  <div id="forensicModal" class="fixed inset-0 bg-black/75 z-50 hidden flex items-center justify-center p-4">
+    <div class="panel max-w-xl w-full p-5 space-y-4 shadow-xl">
+      <div class="flex items-center justify-between border-b border-surface-700 pb-3">
+        <span class="font-semibold text-white font-mono" id="modalFlowId">FLW-000</span>
+        <button onclick="closeForensicModal()" class="text-zinc-400 hover:text-white text-xs">✕ Tutup</button>
       </div>
       
-      <!-- BOX BARU: TOP 3 CONTRIBUTING FEATURES (XAI) -->
-      <div class="p-4 rounded-xl bg-soc-950 border border-soc-800 font-mono text-xs space-y-2">
-        <span class="text-cyan-400 font-semibold block flex items-center justify-between">
-          <span>Top-3 Contributing Features (Reconstruction Error / XAI)</span>
-          <span class="text-[10px] text-slate-500">Sorted by MSE</span>
-        </span>
-        <div id="modalTopFeaturesList" class="space-y-1.5 pt-1">
-          <!-- Populated by JS -->
+      <div class="grid grid-cols-3 gap-3 font-mono text-xs mono-num">
+        <div class="p-2.5 bg-surface-950 border border-surface-800 rounded">
+          <div class="text-[10px] text-zinc-500">Ground Truth</div>
+          <div id="modalTruth" class="font-semibold mt-0.5">--</div>
+        </div>
+        <div class="p-2.5 bg-surface-950 border border-surface-800 rounded">
+          <div class="text-[10px] text-zinc-500">Max-Rank Score</div>
+          <div id="modalMaxRank" class="font-semibold text-sky-400 mt-0.5">--</div>
+        </div>
+        <div class="p-2.5 bg-surface-950 border border-surface-800 rounded">
+          <div class="text-[10px] text-zinc-500">Margin vs &tau;</div>
+          <div id="modalMargin" class="font-semibold mt-0.5">--</div>
         </div>
       </div>
 
-      <div class="p-4 rounded-xl bg-soc-950 border border-soc-800 text-xs leading-relaxed text-slate-300" id="modalReasonText">
+      <div class="grid grid-cols-2 gap-3 font-mono text-xs mono-num">
+        <div class="p-3 bg-surface-950 border border-surface-800 rounded space-y-1">
+          <div class="text-amber-400 text-[11px]">Level 1 — SAE Reconstruction</div>
+          <div>MSE Raw: <span id="modalSaeRaw" class="text-white"></span></div>
+          <div>ECDF Rank: <b id="modalSaeCdf" class="text-amber-300"></b></div>
+        </div>
+        <div class="p-3 bg-surface-950 border border-surface-800 rounded space-y-1">
+          <div class="text-indigo-400 text-[11px]">Level 2 — IForest Latent Z (16-D)</div>
+          <div>Isolation Score: <span id="modalIfRaw" class="text-white"></span></div>
+          <div>ECDF Rank: <b id="modalIfCdf" class="text-indigo-300"></b></div>
+        </div>
       </div>
 
-      <div class="flex justify-end">
-        <button onclick="closeForensicModal()" class="px-5 py-2 rounded-xl bg-soc-800 hover:bg-soc-700 text-xs font-semibold text-white">
-          Tutup Detail
-        </button>
+      <!-- XAI Top 3 Feature Contributions -->
+      <div class="p-3 bg-surface-950 border border-surface-800 rounded font-mono text-xs space-y-2">
+        <div class="text-sky-400 text-[11px] font-semibold flex items-center justify-between">
+          <span>Top-3 Contributing Features (Reconstruction Error / XAI)</span>
+          <span class="text-[10px] text-zinc-500">Sorted by MSE</span>
+        </div>
+        <div id="modalTopFeaturesList" class="space-y-1.5 pt-0.5"></div>
       </div>
+
+      <div id="modalReasonText" class="p-3 bg-surface-950 border border-surface-800 rounded text-xs text-zinc-300 leading-relaxed"></div>
     </div>
   </div>
 
-  <!-- ===================================================================== -->
-  <!-- JAVASCRIPT APPLICATION LOGIC                                          -->
-  <!-- ===================================================================== -->
+  <!-- APPLICATION JAVASCRIPT -->
   <script>
-    /**
-     * 1. STATE GLOBAL APLIKASI
-     */
     const APP_STATE = {
       backendUrl: 'http://127.0.0.1:8080',
       useLiveBackend: false,
       isRunning: true,
       speedMs: 1000,
       timerId: null,
-      
-      // Ambang batas operasional (Default P97 = 0.9832 sesuai hasil notebook)
       percentile: 97.0,
       tau: 0.9832,
-
-      // Kelas serangan yang sedang diaktifkan pengguna
       activeAttacks: [],
-
-      // Statistik berjalan
       totalFlows: 0,
       anomalyFlows: 0,
       flowHistory: [],
       chartHistory: [],
-
-      // Riwayat eksperimen untuk Menu 6
       experiments: [
         { id: 'EXP-01', model: 'Max-Rank ECDF (Optimal)', pct: '97.0%', tau: 0.9832, fpr: '2.93%', recall: '90.50%', f1: 0.9358 },
         { id: 'EXP-02', model: 'Max-Rank ECDF (EER / F1-Max)', pct: '94.0%', tau: 0.9648, fpr: '5.90%', recall: '94.51%', f1: 0.9432 },
@@ -809,9 +644,6 @@
       ]
     };
 
-    /**
-     * 2. NAVIGASI MENU SIDEBAR (1 SAMPAI 6)
-     */
     const MENU_TITLES = {
       'menu-1': '1. Live Traffic Simulation & Monitoring',
       'menu-2': '2. Model Comparison & Benchmark (SAE vs IForest vs Max-Rank)',
@@ -826,11 +658,13 @@
       document.getElementById(menuId).classList.remove('hidden');
 
       document.querySelectorAll('.nav-item').forEach(btn => {
-        btn.className = 'nav-item w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium text-slate-400 hover:text-slate-200 hover:bg-soc-800/60 border border-transparent transition-all';
+        btn.className = 'nav-item w-full flex items-center gap-3 px-2.5 py-2 rounded text-xs font-medium text-zinc-400 hover:text-zinc-200 hover:bg-surface-800/50 transition';
       });
 
       const activeBtn = document.getElementById('nav-' + menuId);
-      activeBtn.className = 'nav-item w-full flex items-center gap-3 px-3.5 py-3 rounded-xl text-sm font-medium transition-all bg-cyan-500/10 text-cyan-400 border border-cyan-500/20';
+      if (activeBtn) {
+        activeBtn.className = 'nav-item w-full flex items-center gap-3 px-2.5 py-2 rounded text-xs font-medium transition bg-surface-800 text-white border border-surface-700';
+      }
 
       document.getElementById('pageHeaderTitle').textContent = MENU_TITLES[menuId];
 
@@ -839,32 +673,24 @@
       }
     }
 
-    /**
-     * 3. KONEKSI KE BACKEND PYTHON (`web/app.py`)
-     */
     async function checkBackendConnection() {
       const badge = document.getElementById('engineStatusBadge');
       try {
         const res = await fetch(`${APP_STATE.backendUrl}/api/status`, { method: 'GET' });
         if (res.ok) {
           APP_STATE.useLiveBackend = true;
-          badge.textContent = 'AI Artifacts Connected';
-          badge.className = 'px-2 py-0.5 text-[11px] font-mono rounded-md bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
+          badge.textContent = 'API Live';
+          badge.className = 'font-mono text-[11px] px-1.5 py-0.5 rounded bg-emerald-500/15 text-emerald-400 border border-emerald-500/30';
           document.getElementById('latestFlowSourceBadge').textContent = 'Source: PyTorch SAE + Joblib IForest';
           return;
         }
-      } catch (err) {
-        // Fallback ke Calibrated Simulation Mode
-      }
+      } catch (_) {}
       APP_STATE.useLiveBackend = false;
-      badge.textContent = 'Calibrated Sim Mode';
-      badge.className = 'px-2 py-0.5 text-[11px] font-mono rounded-md bg-cyan-500/10 text-cyan-400 border border-cyan-500/20';
+      badge.textContent = 'Local Sim';
+      badge.className = 'font-mono text-[11px] px-1.5 py-0.5 rounded bg-sky-500/15 text-sky-400 border border-sky-500/30';
       document.getElementById('latestFlowSourceBadge').textContent = 'Source: Calibrated ECDF Engine';
     }
 
-    /**
-     * 4. GENERATOR & INFERENSI ALIRAN TRAFIK
-     */
     async function fetchNextFlow() {
       const hasAttack = APP_STATE.activeAttacks.length > 0;
       const chosenAttack = hasAttack
@@ -874,15 +700,12 @@
       if (APP_STATE.useLiveBackend) {
         try {
           const response = await fetch(`${APP_STATE.backendUrl}/api/sample-flow?category=${encodeURIComponent(chosenAttack)}&tau=${APP_STATE.tau}`);
-          if (response.ok) {
-            return await response.json();
-          }
-        } catch (e) {
+          if (response.ok) return await response.json();
+        } catch (_) {
           APP_STATE.useLiveBackend = false;
         }
       }
 
-      // Fallback terkalibrasi sesuai distribusi empiris notebook
       const isAttack = hasAttack && Math.random() < 0.82;
       const actualLabel = isAttack ? chosenAttack : 'Benign';
 
@@ -931,13 +754,11 @@
         ifCdf: ifCdf,
         maxRank: maxRank,
         verdict: isAnomaly ? 'ANOMALY' : 'NORMAL',
-        evalStatus: evalStatus
+        evalStatus: evalStatus,
+        latencyMs: 1.25
       };
     }
 
-    /**
-     * 5. SIKLUS SIMULASI REAL-TIME (1 DETIK)
-     */
     async function stepSimulation() {
       const flow = await fetchNextFlow();
 
@@ -959,22 +780,19 @@
       document.getElementById('kpiTotal').textContent = APP_STATE.totalFlows.toLocaleString();
       document.getElementById('kpiAnomalies').textContent = APP_STATE.anomalyFlows.toLocaleString();
       const rate = ((APP_STATE.anomalyFlows / APP_STATE.totalFlows) * 100).toFixed(1);
-      document.getElementById('kpiAnomalyRate').textContent = `${rate}% dari total aliran`;
+      document.getElementById('kpiAnomalyRate').textContent = `${rate}% of traffic`;
 
-      document.getElementById('lastFlowId').textContent = `${flow.id} (Port ${flow.port})`;
+      document.getElementById('lastFlowId').textContent = `${flow.id} (:${flow.port})`;
       const truthEl = document.getElementById('lastFlowTruth');
       truthEl.textContent = flow.groundTruth;
-      truthEl.className = flow.isAttack ? 'text-rose-400 font-semibold mt-1 block' : 'text-emerald-400 font-semibold mt-1 block';
+      truthEl.className = `font-medium mt-0.5 ${flow.isAttack ? 'text-rose-400' : 'text-emerald-400'}`;
 
       document.getElementById('lastFlowSub').textContent = `${flow.saeCdf.toFixed(3)} / ${flow.ifCdf.toFixed(3)}`;
 
       const verdictEl = document.getElementById('lastFlowVerdict');
       verdictEl.textContent = `${flow.verdict} (${flow.maxRank.toFixed(4)})`;
-      verdictEl.className = flow.verdict === 'ANOMALY'
-        ? 'text-rose-400 font-bold mt-1 block'
-        : 'text-emerald-400 font-bold mt-1 block';
+      verdictEl.className = `font-semibold mt-0.5 ${flow.verdict === 'ANOMALY' ? 'text-rose-400' : 'text-emerald-400'}`;
 
-      // UPDATE TAMPILAN LATENSI (MS)
       const latencyEl = document.getElementById('lastFlowLatency');
       if (latencyEl) {
         latencyEl.textContent = flow.latencyMs ? `${flow.latencyMs} ms` : `1.24 ms`;
@@ -990,13 +808,13 @@
         APP_STATE.isRunning = false;
         btn.textContent = 'Resume Stream';
         chip.textContent = 'PAUSED';
-        chip.className = 'px-2.5 py-0.5 text-xs font-mono rounded-full bg-amber-500/10 text-amber-400 border border-amber-500/20';
+        chip.className = 'font-mono text-[11px] px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20';
       } else {
         APP_STATE.timerId = setInterval(stepSimulation, APP_STATE.speedMs);
         APP_STATE.isRunning = true;
         btn.textContent = 'Pause Stream';
         chip.textContent = 'RUNNING';
-        chip.className = 'px-2.5 py-0.5 text-xs font-mono rounded-full bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
+        chip.className = 'font-mono text-[11px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
       }
     }
 
@@ -1014,7 +832,7 @@
     function changeSpeed(val) {
       APP_STATE.speedMs = parseInt(val);
       document.getElementById('speedLabel').textContent = `${val} ms`;
-      document.getElementById('kpiIntervalText').textContent = `${(val / 1000).toFixed(1)}s`;
+      document.getElementById('kpiIntervalText').textContent = `${val}ms`;
       if (APP_STATE.isRunning) {
         clearInterval(APP_STATE.timerId);
         APP_STATE.timerId = setInterval(stepSimulation, APP_STATE.speedMs);
@@ -1029,9 +847,6 @@
       }
     }
 
-    /**
-     * 6. GRAFIK STREAM & KOMPARASI (CHART.JS)
-     */
     let streamChart = null;
     let rocChart = null;
     let classChart = null;
@@ -1046,48 +861,44 @@
             {
               label: 'Max-Rank ECDF',
               data: [],
-              borderColor: '#22d3ee',
-              backgroundColor: 'rgba(34, 211, 238, 0.08)',
-              borderWidth: 2.5,
-              fill: true,
-              tension: 0.25
+              borderColor: '#38bdf8',
+              borderWidth: 2,
+              tension: 0.2,
+              pointRadius: 2
             },
             {
               label: 'SAE CDF',
               data: [],
               borderColor: '#fbbf24',
               borderDash: [4, 4],
-              borderWidth: 1.5,
-              pointRadius: 0,
-              tension: 0.25
+              borderWidth: 1.2,
+              pointRadius: 0
             },
             {
               label: 'IF(Z) CDF',
               data: [],
               borderColor: '#818cf8',
               borderDash: [2, 2],
-              borderWidth: 1.5,
-              pointRadius: 0,
-              tension: 0.25
+              borderWidth: 1.2,
+              pointRadius: 0
             },
             {
-              label: 'Threshold Tau',
+              label: 'Cutoff Tau',
               data: [],
               borderColor: '#f43f5e',
-              borderWidth: 1.8,
-              pointRadius: 0,
-              fill: false
+              borderWidth: 1.2,
+              pointRadius: 0
             }
           ]
         },
         options: {
           responsive: true,
           maintainAspectRatio: false,
-          animation: { duration: 200 },
+          animation: false,
           plugins: { legend: { display: false } },
           scales: {
-            y: { min: 0, max: 1.05, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } },
-            x: { grid: { display: false }, ticks: { color: '#64748b' } }
+            y: { min: 0, max: 1.05, grid: { color: '#1e1e24' }, ticks: { color: '#71717a' } },
+            x: { grid: { display: false }, ticks: { color: '#71717a' } }
           }
         }
       });
@@ -1114,36 +925,29 @@
               {
                 label: 'Proposed Max-Rank (AUC = 0.9834)',
                 data: [0, 0.9050, 0.9324, 0.968, 0.989, 0.996, 1.0],
-                borderColor: '#22d3ee',
-                borderWidth: 2.5,
-                tension: 0.2
+                borderColor: '#38bdf8',
+                borderWidth: 2
               },
               {
                 label: 'SAE Alone (AUC = 0.8813)',
                 data: [0, 0.610, 0.6673, 0.750, 0.840, 0.920, 1.0],
                 borderColor: '#fbbf24',
-                borderDash: [5, 5],
-                borderWidth: 2,
-                tension: 0.2
+                borderDash: [4, 4],
+                borderWidth: 1.5
               },
               {
                 label: 'IForest Alone (AUC = 0.8672)',
                 data: [0, 0.620, 0.6940, 0.740, 0.820, 0.900, 1.0],
                 borderColor: '#818cf8',
-                borderDash: [3, 3],
-                borderWidth: 2,
-                tension: 0.2
+                borderDash: [2, 2],
+                borderWidth: 1.5
               }
             ]
           },
           options: {
             responsive: true,
             maintainAspectRatio: false,
-            plugins: { legend: { labels: { color: '#cbd5e1', font: { size: 11 } } } },
-            scales: {
-              y: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } },
-              x: { grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } }
-            }
+            plugins: { legend: { labels: { color: '#a1a1aa' } } }
           }
         });
       }
@@ -1157,27 +961,20 @@
             datasets: [{
               label: 'Recall (%) pada P97',
               data: [100.0, 89.30, 87.96, 87.64, 87.62],
-              backgroundColor: ['#06b6d4', '#38bdf8', '#60a5fa', '#818cf8', '#a78bfa'],
-              borderRadius: 8
+              backgroundColor: '#0284c7',
+              borderRadius: 4
             }]
           },
           options: {
             responsive: true,
             maintainAspectRatio: false,
             plugins: { legend: { display: false } },
-            scales: {
-              y: { min: 70, max: 100, grid: { color: 'rgba(255,255,255,0.05)' }, ticks: { color: '#94a3b8' } },
-              x: { grid: { display: false }, ticks: { color: '#cbd5e1' } }
-            }
+            scales: { y: { min: 70, max: 100 } }
           }
         });
       }
     }
 
-    /**
-     * 7. THRESHOLD LABORATORY (MENU 3)
-     * Key dibungkus tanda kutip ("80.0", "81.0") agar tidak terpotong menjadi integer oleh JavaScript.
-     */
     const EXACT_SENSITIVITY_DATA = {
       "80.0": { tau: 0.8728, fpr: 19.12, fnr: 1.80, recall: 98.20, prec: 83.70, f1: 0.9037 },
       "80.5": { tau: 0.8751, fpr: 18.82, fnr: 1.80, recall: 98.20, prec: 83.91, f1: 0.9050 },
@@ -1232,68 +1029,60 @@
       APP_STATE.percentile = parseFloat(p);
       APP_STATE.tau = data.tau;
 
-      // Update Label Header & Slider Box
       document.getElementById('labPercentileVal').textContent = `${p}%`;
       document.getElementById('labTauVal').textContent = data.tau.toFixed(4);
       document.getElementById('headerThresholdText').textContent = `P${parseFloat(p).toFixed(0)} (\u03C4 = ${data.tau.toFixed(4)})`;
 
-      // Hitung Elemen Confusion Matrix Eksak dari N_benign = 25.000 & N_attack = 25.000
       const fp = Math.round((data.fpr / 100) * 25000);
       const tn = 25000 - fp;
       const tp = Math.round((data.recall / 100) * 25000);
       const fn = 25000 - tp;
 
-      // Tampilkan Confusion Matrix
       document.getElementById('labTp').textContent = tp.toLocaleString();
       document.getElementById('labFp').textContent = fp.toLocaleString();
       document.getElementById('labFn').textContent = fn.toLocaleString();
       document.getElementById('labTn').textContent = tn.toLocaleString();
 
-      // Tampilkan Metrik Evaluasi
       document.getElementById('labFpr').textContent = `${data.fpr.toFixed(2)}%`;
       document.getElementById('labRecall').textContent = `${data.recall.toFixed(2)}%`;
       document.getElementById('labPrecision').textContent = `${data.prec.toFixed(2)}%`;
       document.getElementById('labF1').textContent = data.f1.toFixed(4);
 
-      // Keterangan dinamis berdasarkan posisi persentil
       const noteEl = document.getElementById('labTradeoffNote');
       if (p === "97.0") {
         noteEl.innerHTML = '<span class="text-emerald-400 font-semibold">✓ Usulan Skripsi (P97):</span> FPR ditekan di bawah 3.00% (2.93%, FP: 732) dengan Recall tetap tinggi di atas 90.50% (TP: 22.626).';
       } else if (p === "94.0") {
-        noteEl.innerHTML = '<span class="text-cyan-400 font-semibold">★ Titik EER & F1 Maksimum (P94):</span> Titik temu FPR dan FNR seimbang (~5.69%) dengan F1-Score tertinggi (0.9432).';
+        noteEl.innerHTML = '<span class="text-sky-400 font-semibold">★ Titik EER & F1 Maksimum (P94):</span> Titik temu FPR dan FNR seimbang (~5.69%) dengan F1-Score tertinggi (0.9432).';
       } else if (p === "95.0") {
         noteEl.innerHTML = '<span class="text-amber-400 font-semibold">● Standar Industri (P95):</span> Batas psikologis FPR di bawah 5.00% (4.93%) dengan Recall mencapai 93.24%.';
       } else if (parseFloat(p) < 94.0) {
-        noteEl.innerHTML = '<span class="text-rose-400 font-semibold">⚠ Alert Fatigue High:</span> FPR terlalu longgar (> 6.00%), memicu banyak alarm palsu pada lalu lintas normal.';
+        noteEl.innerHTML = '<span class="text-rose-400 font-semibold">⚠ Alert Fatigue High:</span> FPR terlalu longgar (> 6.00%), memicu alarm palsu pada lalu lintas normal.';
       } else {
         noteEl.innerHTML = '<span class="text-indigo-400 font-semibold">ℹ High Specificity:</span> Alarm palsu sangat minim, namun sebagian serangan bertipe stealthy mulai terlewat.';
       }
     }
 
-    /**
-     * 8. ANOMALY LOG TABLE & FORENSIC MODAL (MENU 4)
-     */
     function renderLogTable() {
       const tbody = document.getElementById('logTableBody');
       const filter = document.getElementById('filterVerdict').value;
       const filtered = APP_STATE.flowHistory.filter(f => filter === 'all' || f.verdict === filter);
 
       tbody.innerHTML = filtered.slice(0, 20).map(f => `
-        <tr class="hover:bg-soc-800/50 transition">
-          <td class="p-3.5 text-slate-400">${f.time}</td>
-          <td class="p-3.5 font-semibold text-white">${f.id}</td>
-          <td class="p-3.5 ${f.isAttack ? 'text-rose-400 font-semibold' : 'text-emerald-400'}">${f.groundTruth}</td>
-          <td class="p-3.5">${f.saeCdf.toFixed(4)}</td>
-          <td class="p-3.5">${f.ifCdf.toFixed(4)}</td>
-          <td class="p-3.5 font-bold text-cyan-400">${f.maxRank.toFixed(4)}</td>
-          <td class="p-3.5">
-            <span class="px-2 py-0.5 rounded text-[11px] font-bold ${f.verdict === 'ANOMALY' ? 'bg-rose-500/15 text-rose-400 border border-rose-500/30' : 'bg-emerald-500/15 text-emerald-400 border border-emerald-500/30'}">
+        <tr class="hover:bg-surface-800/60">
+          <td class="p-3 text-zinc-400">${f.time}</td>
+          <td class="p-3 font-medium text-white">${f.id}</td>
+          <td class="p-3 ${f.isAttack ? 'text-rose-400' : 'text-emerald-400'}">${f.groundTruth}</td>
+          <td class="p-3">${f.saeCdf.toFixed(4)}</td>
+          <td class="p-3">${f.ifCdf.toFixed(4)}</td>
+          <td class="p-3 font-semibold text-sky-400">${f.maxRank.toFixed(4)}</td>
+          <td class="p-3">
+            <span class="px-1.5 py-0.5 rounded text-[11px] ${f.verdict === 'ANOMALY' ? 'bg-rose-500/15 text-rose-400' : 'bg-emerald-500/15 text-emerald-400'}">
               ${f.verdict}
             </span>
           </td>
-          <td class="p-3.5 font-bold">${f.evalStatus}</td>
-          <td class="p-3.5 text-right">
-            <button onclick="openForensicModal('${f.id}')" class="px-3 py-1 rounded-lg bg-soc-800 hover:bg-soc-700 text-cyan-400 text-xs">
+          <td class="p-3 font-semibold">${f.evalStatus}</td>
+          <td class="p-3 text-right">
+            <button onclick="openForensicModal('${f.id}')" class="text-sky-400 hover:underline">
               Detail
             </button>
           </td>
@@ -1307,48 +1096,47 @@
 
       document.getElementById('modalFlowId').textContent = `${f.id} (Port ${f.port})`;
       document.getElementById('modalTruth').textContent = f.groundTruth;
+      document.getElementById('modalTruth').className = `font-semibold mt-0.5 ${f.isAttack ? 'text-rose-400' : 'text-emerald-400'}`;
       document.getElementById('modalMaxRank').textContent = f.maxRank.toFixed(4);
 
       const diff = f.maxRank - APP_STATE.tau;
       document.getElementById('modalMargin').textContent = (diff >= 0 ? '+' : '') + diff.toFixed(4);
-      document.getElementById('modalMargin').className = diff >= 0 ? 'text-sm font-bold mt-1 block text-rose-400' : 'text-sm font-bold mt-1 block text-emerald-400';
+      document.getElementById('modalMargin').className = `font-semibold mt-0.5 ${diff >= 0 ? 'text-rose-400' : 'text-emerald-400'}`;
 
       document.getElementById('modalSaeRaw').textContent = f.saeRaw.toFixed(6);
       document.getElementById('modalSaeCdf').textContent = f.saeCdf.toFixed(4);
       document.getElementById('modalIfRaw').textContent = f.ifRaw.toFixed(4);
       document.getElementById('modalIfCdf').textContent = f.ifCdf.toFixed(4);
 
-      // RENDER TOP-3 CONTRIBUTING FEATURES (XAI)
       const topListEl = document.getElementById('modalTopFeaturesList');
       if (f.topFeatures && f.topFeatures.length > 0) {
         topListEl.innerHTML = f.topFeatures.map((tf, idx) => `
-          <div class="flex items-center justify-between p-2 rounded bg-soc-900 border border-soc-800">
-            <span class="text-slate-300 font-semibold">${idx + 1}. ${tf.feature || tf.name}</span>
+          <div class="flex items-center justify-between p-2 rounded bg-surface-900 border border-surface-800">
+            <span class="text-zinc-300 font-medium">${idx + 1}. ${tf.feature || tf.name}</span>
             <span class="text-amber-400 font-bold">MSE: ${(tf.error || tf.mse).toFixed(6)}</span>
           </div>
         `).join('');
       } else {
-        // Fallback jika menggunakan simulated data
         topListEl.innerHTML = `
-          <div class="flex items-center justify-between p-2 rounded bg-soc-900 border border-soc-800">
-            <span class="text-slate-300">1. IN_BYTES</span>
+          <div class="flex items-center justify-between p-2 rounded bg-surface-900 border border-surface-800">
+            <span class="text-zinc-300 font-medium">1. IN_BYTES</span>
             <span class="text-amber-400 font-bold">MSE: 0.003412</span>
           </div>
-          <div class="flex items-center justify-between p-2 rounded bg-soc-900 border border-soc-800">
-            <span class="text-slate-300">2. L4_DST_PORT</span>
+          <div class="flex items-center justify-between p-2 rounded bg-surface-900 border border-surface-800">
+            <span class="text-zinc-300 font-medium">2. L4_DST_PORT</span>
             <span class="text-amber-400 font-bold">MSE: 0.001890</span>
           </div>
-          <div class="flex items-center justify-between p-2 rounded bg-soc-900 border border-soc-800">
-            <span class="text-slate-300">3. FLOW_DURATION_MILLISECONDS</span>
+          <div class="flex items-center justify-between p-2 rounded bg-surface-900 border border-surface-800">
+            <span class="text-zinc-300 font-medium">3. FLOW_DURATION_MILLISECONDS</span>
             <span class="text-amber-400 font-bold">MSE: 0.000954</span>
           </div>
         `;
       }
 
-      const dominant = f.saeCdf >= f.ifCdf ? 'SAE Reconstruction Error (Level 1)' : 'Isolation Forest pada Laten Z (Level 2)';
+      const trigger = f.saeCdf >= f.ifCdf ? 'SAE Reconstruction Error (Level 1)' : 'Isolation Forest Latent Z (Level 2)';
       document.getElementById('modalReasonText').innerHTML = f.verdict === 'ANOMALY'
-        ? `Aliran ini ditandai sebagai <strong>ANOMALI</strong> karena skor Max-Rank (<strong>${f.maxRank.toFixed(4)}</strong>) melampaui ambang batas &tau; (<strong>${APP_STATE.tau.toFixed(4)}</strong>). Pemicu dominan berasal dari <strong>${dominant}</strong>.`
-        : `Aliran ini dinyatakan <strong>NORMAL</strong> karena baik peringkat ECDF SAE (${f.saeCdf.toFixed(4)}) maupun IForest (${f.ifCdf.toFixed(4)}) berada di bawah ambang batas operasional &tau; (${APP_STATE.tau.toFixed(4)}).`;
+        ? `Flagged as <b>ANOMALY</b>: Max-Rank (<b>${f.maxRank.toFixed(4)}</b>) melampaui ambang batas operasional &tau; (<b>${APP_STATE.tau.toFixed(4)}</b>). Pemicu dominan berasal dari <b>${trigger}</b>.`
+        : `Classified as <b>NORMAL</b>: Baik peringkat ECDF SAE (${f.saeCdf.toFixed(4)}) maupun IForest (${f.ifCdf.toFixed(4)}) berada di bawah ambang batas &tau; (${APP_STATE.tau.toFixed(4)}).`;
 
       document.getElementById('forensicModal').classList.remove('hidden');
     }
@@ -1370,9 +1158,6 @@
       a.click();
     }
 
-    /**
-     * 9. CSV ANALYSIS & EXPERIMENT HISTORY (MENU 5 & 6)
-     */
     function handleCSVFile(event) {
       const file = event.target.files[0];
       if (!file) return;
@@ -1384,12 +1169,10 @@
     function processCSVContent(text, filename) {
       const lines = text.trim().split('\n');
       const rowCount = Math.max(0, lines.length - 1);
-      let anomalies = 0;
-
       for (let i = 1; i < Math.min(lines.length, 30); i++) {
         stepSimulation();
       }
-      anomalies = Math.round(rowCount * 0.45);
+      const anomalies = Math.round(rowCount * 0.45);
 
       document.getElementById('csvResultBox').classList.remove('hidden');
       document.getElementById('csvName').textContent = filename;
@@ -1406,13 +1189,13 @@
       const tbody = document.getElementById('experimentTableBody');
       tbody.innerHTML = APP_STATE.experiments.map(exp => `
         <tr>
-          <td class="p-3.5 font-bold text-white">${exp.id}</td>
-          <td class="p-3.5 font-sans text-cyan-400">${exp.model}</td>
-          <td class="p-3.5">${exp.pct}</td>
-          <td class="p-3.5 text-amber-400">${exp.tau.toFixed(4)}</td>
-          <td class="p-3.5 text-emerald-400 font-bold">${exp.fpr}</td>
-          <td class="p-3.5 text-cyan-400 font-bold">${exp.recall}</td>
-          <td class="p-3.5 font-bold text-white">${exp.f1}</td>
+          <td class="p-3 font-semibold text-white">${exp.id}</td>
+          <td class="p-3 font-sans text-sky-400">${exp.model}</td>
+          <td class="p-3">${exp.pct}</td>
+          <td class="p-3 text-amber-400">${Number(exp.tau).toFixed(4)}</td>
+          <td class="p-3 text-emerald-400 font-semibold">${exp.fpr}</td>
+          <td class="p-3 text-sky-400 font-semibold">${exp.recall}</td>
+          <td class="p-3 text-white font-semibold">${exp.f1}</td>
         </tr>
       `).join('');
     }
@@ -1438,12 +1221,10 @@
       APP_STATE.activeAttacks = ['Bot', 'Brute Force', 'DDoS'];
     }
 
-    // Jam Sistem
     setInterval(() => {
       document.getElementById('systemClock').textContent = new Date().toLocaleTimeString('id-ID', { hour12: false }) + ' WIB';
     }, 1000);
 
-    // Inisialisasi saat halaman dimuat
     window.addEventListener('DOMContentLoaded', () => {
       initStreamChart();
       checkBackendConnection();
