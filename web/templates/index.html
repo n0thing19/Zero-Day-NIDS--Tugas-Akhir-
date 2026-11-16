@@ -1,0 +1,601 @@
+<!DOCTYPE html>
+<html lang="id" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>NIDS Studio: Dual-Level Anomaly Detection Platform</title>
+  
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          fontFamily: { 
+            sans: ['Inter', 'sans-serif'], 
+            mono: ['JetBrains Mono', 'monospace'] 
+          },
+          colors: { 
+            surface: { 
+              950: '#09090b', 
+              900: '#121215', 
+              800: '#1e1e24', 
+              700: '#27272a' 
+            } 
+          }
+        }
+      }
+    }
+  </script>
+
+  <link rel="stylesheet" href="/static/css/style.css">
+</head>
+<body class="bg-surface-950 text-zinc-200 font-sans text-sm h-screen flex flex-col overflow-hidden selection:bg-sky-500/30 selection:text-sky-200">
+
+  <!-- TOP HEADER BAR (FULL WIDTH ABOVE SIDEBAR & CONTENT) -->
+  <header class="h-14 border-b border-surface-700 bg-surface-900 px-4 flex items-center justify-between shrink-0 z-30">
+    <div class="flex items-center gap-3">
+      <button onclick="toggleSidebar()" class="p-1.5 rounded bg-surface-800 hover:bg-surface-700 text-zinc-300 border border-surface-700 transition" title="Toggle Sidebar">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
+        </svg>
+      </button>
+      <h1 id="pageHeaderTitle" class="font-semibold text-white text-sm">Live Stream NetFlow Monitoring</h1>
+    </div>
+
+    <div class="flex items-center gap-3 font-mono text-xs">
+      <div class="px-2.5 py-1 bg-surface-950 border border-surface-700 rounded flex items-center gap-2">
+        <span class="text-zinc-400">Operating Point:</span>
+        <span id="headerThresholdText" class="text-sky-400 font-medium">P97 (&tau; = 0.9832)</span>
+      </div>
+      <div id="systemClock" class="px-2.5 py-1 bg-surface-950 border border-surface-700 rounded text-zinc-400 mono-num">
+        00:00:00 WIB
+      </div>
+    </div>
+  </header>
+
+  <!-- BELOW HEADER: SIDEBAR + MAIN WORKSPACE -->
+  <div class="flex-1 flex overflow-hidden">
+
+    <!-- SIDEBAR NAVIGATION -->
+    <aside id="sidebar" class="w-64 bg-surface-900 border-r border-surface-700 flex flex-col justify-between shrink-0 select-none z-20">
+      <div class="p-3">
+        <div class="text-[11px] font-mono uppercase text-zinc-500 px-2.5 py-1.5">Console Views</div>
+        <nav id="sidebarNav" class="space-y-0.5">
+          <button onclick="switchMenu('menu-1')" id="nav-menu-1" class="nav-item w-full flex items-center px-3 py-2 rounded text-xs font-medium transition bg-surface-800 text-white border border-surface-700">
+            <span>Live Stream NetFlow</span>
+          </button>
+          <button onclick="switchMenu('menu-2')" id="nav-menu-2" class="nav-item w-full flex items-center px-3 py-2 rounded text-xs font-medium text-zinc-400 hover:text-zinc-200 hover:bg-surface-800/50 transition">
+            <span>Model Comparison</span>
+          </button>
+          <button onclick="switchMenu('menu-3')" id="nav-menu-3" class="nav-item w-full flex items-center px-3 py-2 rounded text-xs font-medium text-zinc-400 hover:text-zinc-200 hover:bg-surface-800/50 transition">
+            <span>Threshold Lab</span>
+          </button>
+          <button onclick="switchMenu('menu-4')" id="nav-menu-4" class="nav-item w-full flex items-center px-3 py-2 rounded text-xs font-medium text-zinc-400 hover:text-zinc-200 hover:bg-surface-800/50 transition">
+            <span>Anomaly Explorer</span>
+          </button>
+          <button onclick="switchMenu('menu-5')" id="nav-menu-5" class="nav-item w-full flex items-center px-3 py-2 rounded text-xs font-medium text-zinc-400 hover:text-zinc-200 hover:bg-surface-800/50 transition">
+            <span>CSV Batch Ingestion</span>
+          </button>
+          <button onclick="switchMenu('menu-6')" id="nav-menu-6" class="nav-item w-full flex items-center px-3 py-2 rounded text-xs font-medium text-zinc-400 hover:text-zinc-200 hover:bg-surface-800/50 transition">
+            <span>Experiment &amp; Artifacts</span>
+          </button>
+        </nav>
+      </div>
+
+      <!-- Backend Status Footer -->
+      <div class="p-3.5 border-t border-surface-700 bg-surface-950/60 space-y-2.5 text-xs">
+        <div class="flex items-center justify-between">
+          <span class="text-zinc-400">Inference Engine</span>
+          <span id="engineStatusBadge" class="font-mono text-[11px] px-1.5 py-0.5 rounded bg-zinc-800 text-zinc-300">Checking...</span>
+        </div>
+        <div class="font-mono text-[11px] text-zinc-400 space-y-0.5 leading-relaxed border-t border-surface-800 pt-2">
+          <div class="truncate">SAE: <span class="text-zinc-300">sae_autoencoder_final.pth</span></div>
+          <div class="truncate">IF: <span class="text-zinc-300">iforest_latent_final.joblib</span></div>
+          <div class="truncate">Ref: <span class="text-sky-400">sae/ifz_calib_norm_ref.npy</span></div>
+        </div>
+        <button onclick="checkBackendConnection()" class="w-full py-1.5 bg-surface-800 hover:bg-surface-700 border border-surface-700 rounded text-xs font-medium text-zinc-200 transition">
+          Reconnect Backend (`app.py`)
+        </button>
+      </div>
+    </aside>
+
+    <!-- Centered Content Viewport -->
+    <main class="flex-1 overflow-y-auto px-6 py-6 flex flex-col items-center">
+      <div class="w-full">
+
+        <!-- =============================================================== -->
+        <!-- MENU: LIVE NETFLOW MONITORING                                   -->
+        <!-- =============================================================== -->
+        <section id="menu-1" class="menu-section space-y-6">
+          <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="panel p-4">
+              <div class="text-xs text-zinc-400">Processed Flows</div>
+              <div id="kpiTotal" class="text-2xl font-semibold text-white font-mono mono-num mt-1">0</div>
+              <div class="text-[11px] text-zinc-500 mt-1 font-mono">Interval: <span id="kpiIntervalText">1000ms</span></div>
+            </div>
+            <div class="panel p-4">
+              <div class="text-xs text-zinc-400">Anomalies Flagged</div>
+              <div id="kpiAnomalies" class="text-2xl font-semibold text-rose-400 font-mono mono-num mt-1">0</div>
+              <div id="kpiAnomalyRate" class="text-[11px] text-zinc-500 mt-1 font-mono">0.0% of traffic</div>
+            </div>
+            <div class="panel p-4">
+              <div class="text-xs text-zinc-400">Detection Recall (TPR)</div>
+              <div id="kpiRecall" class="text-2xl font-semibold text-sky-400 font-mono mono-num mt-1">90.50%</div>
+              <div class="text-[11px] text-zinc-500 mt-1 font-mono">Target Zero-Day &ge; 87%</div>
+            </div>
+            <div class="panel p-4">
+              <div class="text-xs text-zinc-400">False Positive Rate (FPR)</div>
+              <div id="kpiFpr" class="text-2xl font-semibold text-emerald-400 font-mono mono-num mt-1">2.93%</div>
+              <div class="text-[11px] text-zinc-500 mt-1 font-mono">Target Bound &lt; 3.00%</div>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+            <!-- Controls & Live Source Selection -->
+            <div class="lg:col-span-4 space-y-4">
+              <div class="panel p-4 space-y-4">
+                <div class="flex items-center justify-between border-b border-surface-700 pb-2.5">
+                  <span class="font-medium text-xs uppercase tracking-wider text-zinc-400">Stream Controller</span>
+                  <span id="streamStatusChip" class="font-mono text-[11px] px-2 py-0.5 rounded bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">RUNNING</span>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                  <button id="btnPlayPause" onclick="toggleSimulation()" class="py-2 bg-sky-600 hover:bg-sky-500 text-white font-medium rounded text-xs transition">Pause Stream</button>
+                  <button onclick="resetSimulation()" class="py-2 bg-surface-800 hover:bg-surface-700 border border-surface-700 text-zinc-200 rounded text-xs transition">Reset Data</button>
+                </div>
+                <div>
+                  <div class="flex justify-between text-xs text-zinc-400 mb-1">
+                    <span>Polling Interval</span>
+                    <span id="speedLabel" class="font-mono text-zinc-200">1000 ms</span>
+                  </div>
+                  <input type="range" min="300" max="2000" step="100" value="1000" oninput="changeSpeed(this.value)" class="w-full accent-sky-500 cursor-pointer">
+                </div>
+              </div>
+
+              <div class="panel p-4 space-y-3">
+                <div class="border-b border-surface-700 pb-2">
+                  <div class="font-medium text-xs uppercase tracking-wider text-zinc-400">Live Attack Class Ingestion</div>
+                  <div class="text-[11px] text-zinc-500 mt-0.5">Stream sampel langsung dari partisi Parquet:</div>
+                </div>
+                <div class="space-y-1.5">
+                  <label class="flex items-center justify-between p-2.5 bg-surface-950 border border-surface-800 hover:border-surface-700 rounded cursor-pointer">
+                    <div>
+                      <div class="text-xs font-medium text-zinc-200">Botnet Activity</div>
+                      <div class="text-[11px] font-mono text-zinc-500">Unseen Attacks Partitions</div>
+                    </div>
+                    <input type="checkbox" onchange="toggleAttack('Bot', this.checked)" class="accent-sky-500 rounded">
+                  </label>
+                  <label class="flex items-center justify-between p-2.5 bg-surface-950 border border-surface-800 hover:border-surface-700 rounded cursor-pointer">
+                    <div>
+                      <div class="text-xs font-medium text-zinc-200">SSH / FTP Brute Force</div>
+                      <div class="text-[11px] font-mono text-zinc-500">Unseen Attacks Partitions</div>
+                    </div>
+                    <input type="checkbox" onchange="toggleAttack('Brute Force', this.checked)" class="accent-sky-500 rounded">
+                  </label>
+                  <label class="flex items-center justify-between p-2.5 bg-surface-950 border border-surface-800 hover:border-surface-700 rounded cursor-pointer">
+                    <div>
+                      <div class="text-xs font-medium text-zinc-200">DDoS Volumetric</div>
+                      <div class="text-[11px] font-mono text-zinc-500">Unseen Attacks Partitions</div>
+                    </div>
+                    <input type="checkbox" onchange="toggleAttack('DDoS', this.checked)" class="accent-sky-500 rounded">
+                  </label>
+                  <label class="flex items-center justify-between p-2.5 bg-surface-950 border border-surface-800 hover:border-surface-700 rounded cursor-pointer">
+                    <div>
+                      <div class="text-xs font-medium text-zinc-200">DoS Slowloris / Hulk</div>
+                      <div class="text-[11px] font-mono text-zinc-500">Unseen Attacks Partitions</div>
+                    </div>
+                    <input type="checkbox" onchange="toggleAttack('DoS', this.checked)" class="accent-sky-500 rounded">
+                  </label>
+                  <label class="flex items-center justify-between p-2.5 bg-surface-950 border border-surface-800 hover:border-surface-700 rounded cursor-pointer">
+                    <div>
+                      <div class="text-xs font-medium text-zinc-200">Reconnaissance / Scan</div>
+                      <div class="text-[11px] font-mono text-zinc-500">Unseen Attacks Partitions</div>
+                    </div>
+                    <input type="checkbox" onchange="toggleAttack('Reconnaissance', this.checked)" class="accent-sky-500 rounded">
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            <!-- Real-Time Chart & Latest Flow Inspector -->
+            <div class="lg:col-span-8 flex flex-col justify-between space-y-4">
+              <div class="panel p-4 space-y-3">
+                <div class="flex items-center justify-between shrink-0">
+                  <div>
+                    <span class="font-medium text-xs uppercase tracking-wider text-zinc-400">Real-Time Anomaly Score Stream</span>
+                    <div class="text-[11px] text-zinc-500">Dual-Level Max-Rank ECDF vs ambang batas &tau;</div>
+                  </div>
+                  <div class="flex items-center gap-3 font-mono text-[11px] text-zinc-400">
+                    <span><b class="text-sky-400">—</b> Max-Rank</span>
+                    <span><b class="text-amber-400">--</b> SAE CDF</span>
+                    <span><b class="text-indigo-400">··</b> IF(Z) CDF</span>
+                    <span><b class="text-rose-500">—</b> Cutoff &tau;</span>
+                  </div>
+                </div>
+                <div class="h-[375px] w-full">
+                  <canvas id="liveTrajectoryChart"></canvas>
+                </div>
+              </div>
+
+              <!-- Last Flow Telemetry -->
+              <div class="panel p-4">
+                <div class="flex items-center justify-between mb-2.5">
+                  <span class="text-[11px] font-mono uppercase text-zinc-500">Latest Inspected Flow</span>
+                  <span id="latestFlowSourceBadge" class="text-[11px] font-mono text-zinc-400">Source: Menunggu Backend...</span>
+                </div>
+                <div class="grid grid-cols-2 sm:grid-cols-5 gap-3 font-mono text-xs mono-num">
+                  <div class="p-2.5 bg-surface-950 border border-surface-800 rounded">
+                    <div class="text-[11px] text-zinc-500">Flow ID / Port</div>
+                    <div id="lastFlowId" class="text-white font-medium mt-0.5">--</div>
+                  </div>
+                  <div class="p-2.5 bg-surface-950 border border-surface-800 rounded">
+                    <div class="text-[11px] text-zinc-500">Ground Truth</div>
+                    <div id="lastFlowTruth" class="text-emerald-400 font-medium mt-0.5">Benign</div>
+                  </div>
+                  <div class="p-2.5 bg-surface-950 border border-surface-800 rounded">
+                    <div class="text-[11px] text-zinc-500">SAE / IF(Z) ECDF</div>
+                    <div id="lastFlowSub" class="text-zinc-200 mt-0.5">0.000 / 0.000</div>
+                  </div>
+                  <div class="p-2.5 bg-surface-950 border border-surface-800 rounded">
+                    <div class="text-[11px] text-zinc-500">Max-Rank Verdict</div>
+                    <div id="lastFlowVerdict" class="text-emerald-400 font-semibold mt-0.5">NORMAL</div>
+                  </div>
+                  <div class="p-2.5 bg-surface-950 border border-surface-800 rounded">
+                    <div class="text-[11px] text-zinc-500">Inference Latency</div>
+                    <div id="lastFlowLatency" class="text-sky-400 font-semibold mt-0.5">-- ms</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- =============================================================== -->
+        <!-- MENU: MODEL COMPARISON & BENCHMARK                              -->
+        <!-- =============================================================== -->
+        <section id="menu-2" class="menu-section hidden space-y-6">
+          <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+            <div class="panel p-4 space-y-2">
+              <span class="font-mono text-[11px] px-2 py-0.5 rounded bg-amber-500/10 text-amber-400 border border-amber-500/20">Baseline 1</span>
+              <div class="text-sm font-semibold text-white">Stacked Autoencoder (SAE)</div>
+              <p class="text-xs text-zinc-400 leading-relaxed">
+                Arsitektur simetris <code class="text-zinc-200">39 &rarr; 64 &rarr; 32 &rarr; 16 &rarr; 32 &rarr; 64 &rarr; 39</code>. Mendeteksi anomali volumetrik dari tingginya <em>Reconstruction Error (MSE)</em>.
+              </p>
+            </div>
+
+            <div class="panel p-4 space-y-2">
+              <span class="font-mono text-[11px] px-2 py-0.5 rounded bg-indigo-500/10 text-indigo-400 border border-indigo-500/20">Baseline 2</span>
+              <div class="text-sm font-semibold text-white">Isolation Forest pada Laten Z</div>
+              <p class="text-xs text-zinc-400 leading-relaxed">
+                Mengisolasi anomali struktural pada ruang representasi laten <code class="text-zinc-200">Z &in; R<sup>16</sup></code> tanpa mencampur nilai MSE ke pohon isolasi.
+              </p>
+            </div>
+
+            <div class="panel p-4 space-y-2 border-sky-500/40 bg-sky-950/10">
+              <span class="font-mono text-[11px] px-2 py-0.5 rounded bg-sky-500/20 text-sky-300 border border-sky-500/30">Proposed Method</span>
+              <div class="text-sm font-semibold text-white">Hybrid Max-Rank ECDF (P97)</div>
+              <p class="text-xs text-zinc-300 leading-relaxed">
+                Menyetarakan skala SAE dan IForest dengan fungsi distribusi kumulatif empiris (ECDF), lalu menetapkan keputusan via <code class="text-sky-300">max(CDF_SAE, CDF_IF)</code>.
+              </p>
+            </div>
+          </div>
+
+          <div class="panel p-5 space-y-4">
+            <div class="border-b border-surface-700 pb-3">
+              <h2 class="font-semibold text-white">Tabel Evaluasi Komparatif (NF-UQ-NIDS-v2, N = 50.000 Sampel Uji)</h2>
+              <p class="text-xs text-zinc-400 mt-0.5">Balanced Zero-Day Test Split: 25.000 Benign Test vs 25.000 Unseen Attacks (5 Kelas Serangan)</p>
+            </div>
+            <div class="overflow-x-auto">
+              <table class="w-full text-left border-collapse font-mono text-xs mono-num">
+                <thead>
+                  <tr class="border-b border-surface-700 text-zinc-400 bg-surface-950">
+                    <th class="p-3 font-sans font-medium">Konfigurasi Model</th>
+                    <th class="p-3">Cutoff (&tau;)</th>
+                    <th class="p-3 text-right">TP</th>
+                    <th class="p-3 text-right">FP</th>
+                    <th class="p-3 text-right text-emerald-400">FPR (%)</th>
+                    <th class="p-3 text-right text-sky-400">Recall (%)</th>
+                    <th class="p-3 text-right">Precision (%)</th>
+                    <th class="p-3 text-right">F1-Score</th>
+                    <th class="p-3 text-right">ROC-AUC</th>
+                  </tr>
+                </thead>
+                <tbody class="divide-y divide-surface-800 text-zinc-300">
+                  <tr>
+                    <td class="p-3 font-sans text-amber-400 font-medium">Baseline 1: SAE Alone (MSE P95)</td>
+                    <td class="p-3">0.0006</td>
+                    <td class="p-3 text-right">16,682</td>
+                    <td class="p-3 text-right">1,099</td>
+                    <td class="p-3 text-right text-emerald-400">4.40%</td>
+                    <td class="p-3 text-right text-sky-400">66.73%</td>
+                    <td class="p-3 text-right">93.82%</td>
+                    <td class="p-3 text-right">0.7799</td>
+                    <td class="p-3 text-right">0.8813</td>
+                  </tr>
+                  <tr>
+                    <td class="p-3 font-sans text-indigo-400 font-medium">Baseline 2: IForest Alone (Cascaded)</td>
+                    <td class="p-3">0.4754</td>
+                    <td class="p-3 text-right">17,351</td>
+                    <td class="p-3 text-right">1,302</td>
+                    <td class="p-3 text-right text-emerald-400">5.21%</td>
+                    <td class="p-3 text-right text-sky-400">69.40%</td>
+                    <td class="p-3 text-right">93.02%</td>
+                    <td class="p-3 text-right">0.7950</td>
+                    <td class="p-3 text-right">0.8672</td>
+                  </tr>
+                  <tr>
+                    <td class="p-3 font-sans text-sky-300 font-medium">Proposed: Max-Rank ECDF (P95)</td>
+                    <td class="p-3">0.9708</td>
+                    <td class="p-3 text-right">23,311</td>
+                    <td class="p-3 text-right">1,232</td>
+                    <td class="p-3 text-right text-amber-400">4.93%</td>
+                    <td class="p-3 text-right text-sky-400 font-semibold">93.24%</td>
+                    <td class="p-3 text-right">94.98%</td>
+                    <td class="p-3 text-right font-semibold">0.9410</td>
+                    <td class="p-3 text-right font-semibold">0.9834</td>
+                  </tr>
+                  <tr class="bg-sky-500/10 font-semibold text-white">
+                    <td class="p-3 font-sans">Proposed Final: Max-Rank ECDF (P97)</td>
+                    <td class="p-3 text-amber-400">0.9832</td>
+                    <td class="p-3 text-right">22,626</td>
+                    <td class="p-3 text-right text-emerald-400">732</td>
+                    <td class="p-3 text-right text-emerald-400">2.93%</td>
+                    <td class="p-3 text-right text-sky-400">90.50%</td>
+                    <td class="p-3 text-right">96.87%</td>
+                    <td class="p-3 text-right">0.9358</td>
+                    <td class="p-3 text-right">0.9834</td>
+                  </tr>
+                </tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+            <div class="panel p-4 space-y-3">
+              <div class="text-xs font-medium uppercase tracking-wider text-zinc-400">Kurva ROC Komparatif</div>
+              <div class="h-64"><canvas id="rocComparisonChart"></canvas></div>
+            </div>
+            <div class="panel p-4 space-y-3">
+              <div class="text-xs font-medium uppercase tracking-wider text-zinc-400">Recall Per Kelas Serangan pada P97 (&tau; = 0.9832)</div>
+              <div class="h-64"><canvas id="classRecallChart"></canvas></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- =============================================================== -->
+        <!-- MENU: THRESHOLD & SENSITIVITY LAB                               -->
+        <!-- =============================================================== -->
+        <section id="menu-3" class="menu-section hidden space-y-6">
+          <div class="panel p-5 space-y-5">
+            <div class="flex flex-wrap items-center justify-between gap-4 border-b border-surface-700 pb-3">
+              <div>
+                <h2 class="font-semibold text-white">Empirical Percentile Threshold Tuner</h2>
+                <p class="text-xs text-zinc-400 mt-0.5">Geser persentil kalibrasi (80.0% – 99.0%) untuk menganalisis trade-off FPR versus Recall.</p>
+              </div>
+              <div class="flex flex-wrap gap-2 font-mono text-xs">
+                <button onclick="setLabPercentile(94.0)" class="px-3 py-1.5 bg-surface-800 hover:bg-surface-700 border border-surface-700 rounded text-sky-400 font-medium">Set P94 EER (0.9648)</button>
+                <button onclick="setLabPercentile(95.0)" class="px-3 py-1.5 bg-surface-800 hover:bg-surface-700 border border-surface-700 rounded text-amber-400">Set P95 (0.9708)</button>
+                <button onclick="setLabPercentile(97.0)" class="px-3 py-1.5 bg-sky-600 hover:bg-sky-500 text-white font-medium rounded">Set P97 Optimal (0.9832)</button>
+                <button onclick="setLabPercentile(99.0)" class="px-3 py-1.5 bg-surface-800 hover:bg-surface-700 border border-surface-700 rounded text-zinc-300">Set P99 (0.9948)</button>
+              </div>
+            </div>
+
+            <div class="p-4 bg-surface-950 border border-surface-800 rounded space-y-3">
+              <div class="flex justify-between font-mono text-xs">
+                <span>Persentil Kalibrasi Normal: <b id="labPercentileVal" class="text-sky-400">97.0%</b></span>
+                <span>Numerical Cutoff (&tau;): <b id="labTauVal" class="text-amber-400">0.9832</b></span>
+              </div>
+              <input id="labSlider" type="range" min="80.0" max="99.0" step="0.5" value="97.0" oninput="updateLabMetrics(this.value)" class="w-full accent-sky-500 cursor-pointer">
+              <div id="labTradeoffNote" class="text-xs text-emerald-400 font-mono leading-relaxed pt-1">
+                ✓ Usulan Skripsi (P97): FPR ditekan di bawah 3.00% (2.93%, FP: 732) dengan Recall tetap tinggi di atas 90.50% (TP: 22.626).
+              </div>
+            </div>
+
+            <div class="grid grid-cols-2 lg:grid-cols-4 gap-4 font-mono mono-num">
+              <div class="p-3.5 bg-surface-950 border border-surface-800 rounded">
+                <div class="text-xs text-zinc-500">True Positive (TP)</div>
+                <div id="labTp" class="text-xl font-semibold text-white mt-1">22,626</div>
+              </div>
+              <div class="p-3.5 bg-surface-950 border border-surface-800 rounded">
+                <div class="text-xs text-zinc-500">False Positive (FP)</div>
+                <div id="labFp" class="text-xl font-semibold text-amber-400 mt-1">732</div>
+              </div>
+              <div class="p-3.5 bg-surface-950 border border-surface-800 rounded">
+                <div class="text-xs text-zinc-500">False Negative (FN)</div>
+                <div id="labFn" class="text-xl font-semibold text-rose-400 mt-1">2,374</div>
+              </div>
+              <div class="p-3.5 bg-surface-950 border border-surface-800 rounded">
+                <div class="text-xs text-zinc-500">True Negative (TN)</div>
+                <div id="labTn" class="text-xl font-semibold text-emerald-400 mt-1">24,268</div>
+              </div>
+            </div>
+
+            <div class="flex flex-wrap items-center justify-between gap-4 pt-2">
+              <div class="font-mono text-xs text-zinc-400">
+                Computed Metrics — FPR: <b id="labFpr" class="text-emerald-400">2.93%</b> | Recall: <b id="labRecall" class="text-sky-400">90.50%</b> | Precision: <b id="labPrecision" class="text-white">96.87%</b> | F1: <b id="labF1" class="text-white">0.9358</b>
+              </div>
+              <button onclick="saveExperimentBookmark()" class="px-4 py-2 bg-sky-600 hover:bg-sky-500 text-white text-xs font-medium rounded transition">
+                Simpan Konfigurasi ke Log
+              </button>
+            </div>
+          </div>
+        </section>
+
+        <!-- =============================================================== -->
+        <!-- MENU: ANOMALY EXPLORER & FORENSICS                              -->
+        <!-- =============================================================== -->
+        <section id="menu-4" class="menu-section hidden space-y-4">
+          <div class="panel p-5 space-y-4">
+            <div class="flex items-center justify-between">
+              <div>
+                <h2 class="font-semibold text-white">Flow Inspection Log (Live Stream Records)</h2>
+                <p class="text-xs text-zinc-400 mt-0.5">Klik tombol <strong>Detail</strong> pada baris mana pun untuk memeriksa skor dan XAI.</p>
+              </div>
+              <div class="flex gap-2">
+                <select id="filterVerdict" onchange="renderLogTable()" class="bg-surface-950 border border-surface-700 rounded px-2.5 py-1.5 text-xs text-zinc-200">
+                  <option value="all">Semua Aliran</option>
+                  <option value="ANOMALY">Anomali Saja</option>
+                  <option value="NORMAL">Normal Saja</option>
+                </select>
+                <button onclick="exportLogsCSV()" class="px-3 py-1.5 bg-surface-800 hover:bg-surface-700 border border-surface-700 rounded text-xs font-mono text-zinc-200">
+                  Export CSV
+                </button>
+              </div>
+            </div>
+
+            <div class="overflow-x-auto border border-surface-800 rounded">
+              <table class="w-full text-left border-collapse font-mono text-xs mono-num">
+                <thead>
+                  <tr class="bg-surface-950 text-zinc-400 border-b border-surface-800">
+                    <th class="p-3">Waktu</th>
+                    <th class="p-3">Flow ID</th>
+                    <th class="p-3">Ground Truth</th>
+                    <th class="p-3">SAE CDF</th>
+                    <th class="p-3">IF(Z) CDF</th>
+                    <th class="p-3 text-sky-400">Max-Rank</th>
+                    <th class="p-3">Prediksi</th>
+                    <th class="p-3">Eval</th>
+                    <th class="p-3 text-right">Aksi</th>
+                  </tr>
+                </thead>
+                <tbody id="logTableBody" class="divide-y border-surface-800"></tbody>
+              </table>
+            </div>
+          </div>
+        </section>
+
+        <!-- =============================================================== -->
+        <!-- MENU: CSV BATCH INGESTION                                       -->
+        <!-- =============================================================== -->
+        <section id="menu-5" class="menu-section hidden space-y-4">
+          <div class="panel p-5 space-y-4">
+            <div>
+              <h2 class="font-semibold text-white">Batch CSV Ingestion (NF-UQ-NIDS-v2, 39 Fitur Bersih)</h2>
+              <p class="text-xs text-zinc-400 mt-0.5">Unggah berkas CSV fitur NetFlow untuk diproses langsung via PyTorch SAE &amp; Joblib IForest.</p>
+            </div>
+            <div onclick="document.getElementById('csvInput').click()" class="border border-dashed border-surface-700 hover:border-sky-500 rounded p-8 text-center bg-surface-950 cursor-pointer transition">
+              <input type="file" id="csvInput" accept=".csv" class="hidden" onchange="handleCSVFile(event)">
+              <div class="text-xs font-medium text-zinc-200">Klik untuk memilih berkas CSV</div>
+              <div class="text-[11px] text-zinc-500 mt-1 font-mono">Kompatibel dengan skema 39 fitur NF-UQ-NIDS-v2</div>
+            </div>
+            <div id="csvResultBox" class="hidden grid grid-cols-3 gap-4 pt-3 border-t border-surface-800 font-mono text-xs">
+              <div class="p-3 bg-surface-950 rounded border border-surface-800">Nama File: <b id="csvName" class="text-white">--</b></div>
+              <div class="p-3 bg-surface-950 rounded border border-surface-800">Baris Terbaca: <b id="csvRows" class="text-sky-400">0</b></div>
+              <div class="p-3 bg-surface-950 rounded border border-surface-800">Status Pengiriman: <b id="csvStatus" class="text-emerald-400">Ready</b></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- =============================================================== -->
+        <!-- MENU: EXPERIMENT HISTORY & ARTIFACTS                            -->
+        <!-- =============================================================== -->
+        <section id="menu-6" class="menu-section hidden space-y-6">
+          <div class="panel p-5 space-y-4">
+            <div class="flex items-center justify-between border-b border-surface-700 pb-3">
+              <div>
+                <h2 class="font-semibold text-white">Riwayat Eksperimen Threshold</h2>
+                <p class="text-xs text-zinc-400 mt-0.5">Konfigurasi cut-off tersimpan sepanjang sesi penelitian.</p>
+              </div>
+            </div>
+            <div class="overflow-x-auto border border-surface-800 rounded">
+              <table class="w-full text-left border-collapse font-mono text-xs mono-num">
+                <thead>
+                  <tr class="bg-surface-950 text-zinc-400 border-b border-surface-800">
+                    <th class="p-3">Run ID</th>
+                    <th class="p-3">Model</th>
+                    <th class="p-3">Persentil</th>
+                    <th class="p-3 text-amber-400">&tau; Cutoff</th>
+                    <th class="p-3 text-emerald-400">FPR</th>
+                    <th class="p-3 text-sky-400">Recall</th>
+                    <th class="p-3">F1-Score</th>
+                  </tr>
+                </thead>
+                <tbody id="experimentTableBody" class="divide-y divide-surface-800"></tbody>
+              </table>
+            </div>
+          </div>
+
+          <div class="panel p-5 space-y-3">
+            <h2 class="font-semibold text-white">Integrasi Struktur Direktori Proyek (`notebooks/artifacts/`)</h2>
+            <p class="text-xs text-zinc-400">
+              Server <code class="text-sky-400">web/app.py</code> memuat artefak model dan partisi dataset NetFlow berikut:
+            </p>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 font-mono text-xs">
+              <div class="p-3 bg-surface-950 border border-surface-800 rounded space-y-1">
+                <div class="text-sky-400 font-semibold">Model &amp; Scaler Artifacts</div>
+                <div class="text-zinc-300">• notebooks/artifacts/sae_autoencoder_final.pth</div>
+                <div class="text-zinc-300">• notebooks/artifacts/iforest_latent_final.joblib</div>
+                <div class="text-zinc-300">• notebooks/artifacts/minmax_params.json</div>
+                <div class="text-zinc-300">• notebooks/artifacts/hybrid_pipeline_config.json</div>
+              </div>
+              <div class="p-3 bg-surface-950 border border-surface-800 rounded space-y-1">
+                <div class="text-emerald-400 font-semibold">ECDF Reference &amp; Partitions</div>
+                <div class="text-zinc-300">• notebooks/artifacts/sae_calib_norm_ref.npy</div>
+                <div class="text-zinc-300">• notebooks/artifacts/ifz_calib_norm_ref.npy</div>
+                <div class="text-zinc-300">• dataset/processed/benign_test_parts/*.parquet</div>
+                <div class="text-zinc-300">• dataset/processed/unseen_attack_test_parts/*</div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+      </div>
+    </main>
+  </div>
+
+  <!-- FORENSIC MODAL -->
+  <div id="forensicModal" class="fixed inset-0 bg-black/75 z-50 hidden flex items-center justify-center p-4">
+    <div class="panel max-w-xl w-full p-5 space-y-4 shadow-xl">
+      <div class="flex items-center justify-between border-b border-surface-700 pb-3">
+        <span class="font-semibold text-white font-mono" id="modalFlowId">FLW-000</span>
+        <button onclick="closeForensicModal()" class="text-zinc-400 hover:text-white text-xs">✕ Tutup</button>
+      </div>
+      
+      <div class="grid grid-cols-3 gap-3 font-mono text-xs mono-num">
+        <div class="p-2.5 bg-surface-950 border border-surface-800 rounded">
+          <div class="text-[10px] text-zinc-500">Ground Truth</div>
+          <div id="modalTruth" class="font-semibold mt-0.5">--</div>
+        </div>
+        <div class="p-2.5 bg-surface-950 border border-surface-800 rounded">
+          <div class="text-[10px] text-zinc-500">Max-Rank Score</div>
+          <div id="modalMaxRank" class="font-semibold text-sky-400 mt-0.5">--</div>
+        </div>
+        <div class="p-2.5 bg-surface-950 border border-surface-800 rounded">
+          <div class="text-[10px] text-zinc-500">Margin vs &tau;</div>
+          <div id="modalMargin" class="font-semibold mt-0.5">--</div>
+        </div>
+      </div>
+
+      <div class="grid grid-cols-2 gap-3 font-mono text-xs mono-num">
+        <div class="p-3 bg-surface-950 border border-surface-800 rounded space-y-1">
+          <div class="text-amber-400 text-[11px]">Level 1 — SAE Reconstruction</div>
+          <div>MSE Raw: <span id="modalSaeRaw" class="text-white"></span></div>
+          <div>ECDF Rank: <b id="modalSaeCdf" class="text-amber-300"></b></div>
+        </div>
+        <div class="p-3 bg-surface-950 border border-surface-800 rounded space-y-1">
+          <div class="text-indigo-400 text-[11px]">Level 2 — IForest Latent Z (16-D)</div>
+          <div>Isolation Score: <span id="modalIfRaw" class="text-white"></span></div>
+          <div>ECDF Rank: <b id="modalIfCdf" class="text-indigo-300"></b></div>
+        </div>
+      </div>
+
+      <div class="p-3 bg-surface-950 border border-surface-800 rounded font-mono text-xs space-y-2">
+        <div class="text-sky-400 text-[11px] font-semibold flex items-center justify-between">
+          <span>Top-3 Contributing Features (XAI Reconstruction Error)</span>
+          <span class="text-[10px] text-zinc-500">Sorted by MSE</span>
+        </div>
+        <div id="modalTopFeaturesList" class="space-y-1.5 pt-0.5"></div>
+      </div>
+
+      <div id="modalReasonText" class="p-3 bg-surface-950 border border-surface-800 rounded text-xs text-zinc-300 leading-relaxed"></div>
+    </div>
+  </div>
+  <!-- JAVASCRIPT APPLICATION -->
+  <script src="/static/js/app.js"></script>
+  </body>
+</html>

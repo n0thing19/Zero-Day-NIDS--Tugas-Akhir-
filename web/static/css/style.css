@@ -1,0 +1,30 @@
+::-webkit-scrollbar {
+  width: 5px;
+  height: 5px;
+}
+
+::-webkit-scrollbar-track {
+  background: #09090b;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #27272a;
+}
+
+.panel {
+  background: #121215;
+  border: 1px solid #27272a;
+  border-radius: 6px;
+}
+
+.mono-num {
+  font-variant-numeric: tabular-nums;
+}
+
+#sidebar {
+  transition: margin-left 0.25s ease-in-out;
+}
+
+#sidebar.collapsed {
+  margin-left: -16rem;
+}
